@@ -1,4 +1,4 @@
--- name: The Definitive Usamune Mod
+-- name: Usamune Deluxe
 -- description: accurate (and more awesome) usamune
 
 local function on_warp(_, __, ___, nodeId)
