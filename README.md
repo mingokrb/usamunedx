@@ -14,12 +14,11 @@ You can also easily add new menus if you got basic Lua knowledge.
 ## ⚒️ **TODO LIST** ⚒️
 * **config,menus.main**: Finish adding submenus
 * **input**: Fix input display buttons
+* **menus**: Prevent pausing while Usamenu is open (somehow, as `HOOK_BEFORE_MARIO_UPDATE` won't work here)
 * **menus.levels**: Add sound to "**Custom**" editing
-* **menus.levels**: Add soft reset by holding Z for 15 frames (0.5s)
 * **menus.levels**: Warp to the level's act select instead of defaulting to act 1 (couldn't figure this out but I hope it's possible with Lua)
 * **menus.levels**: Test/fix romhack support with custom scripted levels (for decomp romhacks)
 * **menus.levels**: Add "**Hints**" showing the selected level's full name, level num, area index and warpnode ID
-* **menus.main**: Add soft reset by holding Z for 15 frames (0.5s)
 * **menus.main**: Add category settings reset by holding Z for 30 frames (1.0s)
 * **general**: Optimize code
 ---

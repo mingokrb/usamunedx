@@ -24,7 +24,7 @@ local menu_info = {
    -- random messages that appear when opening the menu
    random_messages = {
       arr = {},
-      is_showing = false,
+      on_screen = false,
       selected_message = "",
       opacity = 0,
       -- time in frames until message fades out
@@ -72,7 +72,7 @@ function Usamenu.bottom_message(msgArray, timerMax)
 
 	menu_info.random_messages.timer = menu_info.random_messages.timer_max
 	menu_info.random_messages.opacity = 255
-	menu_info.random_messages.is_showing = true
+	menu_info.random_messages.on_screen = true
 end
 
 -- mainly for random messages
@@ -98,8 +98,8 @@ function Usamune.toggle_menu(toggle)
 		hud_hide()
 	else
 		-- off
-		menu_info.random_messages.is_showing = false
-		
+		menu_info.random_messages.on_screen = false
+
 		camera_unfreeze()
 		disable_time_stop_including_mario()
 		hud_show()
@@ -115,7 +115,7 @@ local function hud_render()
 	if is_game_paused() or not Usamune.in_menu then return end
 	djui_hud_set_resolution(RESOLUTION_N64)
 	djui_hud_set_font(FONT_HUD)
-	
+
 	-- fade menu items in
 	if Usamenu.opacity < 255 then
 		Usamenu.opacity = Usamenu.opacity + 25
@@ -123,20 +123,20 @@ local function hud_render()
 	-- render background
 	djui_hud_set_color_array(current_menu.bg_color or Usamenu.bg_color, Usamenu.bg_color[4])
 	djui_hud_render_rect(0, 0, screen_w + 4, screen_h + 4)
-	
+
 	-- render selected menu
    if current_menu.render then
 	   djui_hud_set_color(255, 255, 255, Usamenu.opacity)
 	   current_menu.render()
       djui_hud_set_font(FONT_HUD)
    end
-	
+
 	-- render menu title
 	djui_hud_set_color(255, 255, 255, Usamenu.opacity)
 	djui_hud_print_text(filter_text("* ".. current_menu.title .." *"), 24, 16, 1)
-	
+
 	-- render random message
-	if menu_info.random_messages.is_showing then
+	if menu_info.random_messages.on_screen then
 		djui_hud_set_color(255,255,255, math.min(Usamenu.opacity, menu_info.random_messages.opacity))
 		djui_hud_print_text(filter_text(menu_info.random_messages.selected_message), 32, screen_h - 32, 1)
 	end
@@ -174,6 +174,17 @@ local function toggle_as_button(toggle)
 end
 
 local button_names = Usamune.buttons
+local hold_times = {
+   soft_reset = {
+      max = 15,
+      elapsed = 0,
+   },
+   category_reset = {
+      max = 20,
+      elapsed = 0,
+   },
+}
+
 local function update()
 	if is_game_paused() then return end
 
@@ -186,10 +197,23 @@ local function update()
 
 	-- menu is open
 	else
+      -- soft reset
+      if (gMarioStates[0].controller.buttonDown & START_BUTTON) ~= 0 then
+         local sr = hold_times.soft_reset
+         sr.elapsed = sr.elapsed + 1
+         if sr.elapsed == sr.max then
+            sr.elapsed = 0
+            warp_to_level(gLevelValues.entryLevel, 1, 1)
+            console_log("Usamenu", "Executed soft reset")
+         end
+      else
+         hold_times.soft_reset.elapsed = 0
+      end
+
 		-- close menu
 		if buttonPressed(B_BUTTON) then
          toggle_as_button(false)
-      
+
 		-- go to previous menu
 		elseif buttonPressed(L_TRIG) then
          local previndex = Usamenu.selected_menu
@@ -202,22 +226,22 @@ local function update()
 			Usamenu.selected_menu = Usamenu.selected_menu % #Usamenu.menus + 1
          on_menu_switched(previndex, Usamenu.selected_menu)
 		end
-		
+
 		-- random message timer activated
-		if menu_info.random_messages.is_showing then
+		if menu_info.random_messages.on_screen then
 			local msg = menu_info.random_messages
 			-- increase timer
          if msg.timer > 0 then
 			   msg.timer = msg.timer - 1
          end
-			
+
 			-- fade out before time out
 			if msg.timer <= 15 then
 				msg.opacity = msg.opacity - 17
 			end
 			-- hide timer when fully timed out
 			if msg.timer <= 0 then
-				msg.is_showing = false
+				msg.on_screen = false
 			end
 		end
 	end
