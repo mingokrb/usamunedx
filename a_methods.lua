@@ -1,6 +1,6 @@
 -- split string by separator
 function string:split(separator)
-   local pattern = "([^".. separator .."]+)"
+   local pattern = "([^".. (separator or " ") .."]+)"
    local arr = {}
 
    for part in self:gmatch(pattern) do
@@ -12,11 +12,9 @@ end
 -- concatenate array values into a string
 function table.join(arr, separator)
 	local str = ""
-
 	for i, item in ipairs(arr) do
-		str = str ..(separator or " ").. tostring(item)
+		str = str .. (separator or " ") .. tostring(item)
 	end
-
 	return str
 end
 
