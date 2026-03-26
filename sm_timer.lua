@@ -139,11 +139,6 @@ local function on_warp()
 end
 hook_event(HOOK_ON_WARP, on_warp)
 
-local function on_seq_load(p, seqId)
-   in_act_select = seqId == SEQ_MENU_STAR_SELECT
-end
-hook_event(HOOK_ON_SEQ_LOAD, on_seq_load)
-
 -- timer functions --
 function timer.stop(hideTimer)
    timer.is_running = false

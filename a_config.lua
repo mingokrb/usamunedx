@@ -48,6 +48,9 @@ Config = {
 	data = {
 		sstates = { value = 1, alt = 1 },
 	},
+	misc = {
+		music = { value = 1 },
+	},
 	delux = {
 		menubtn = { value = 12 }, -- D_JPAD as default
 		hints = { value = 1 },

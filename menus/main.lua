@@ -12,21 +12,23 @@ table.insert(button_names, "NONE")
 local function update_menu()
 	local submenus = {
 		{ name = "timer", selection = 1, description =
-         "Timer features" },
+         "Timer functions" },
 		{ name = "misct", selection = 1, description =
-         "Miscellaneous timing features" },
+         "Miscellaneous timing functions" },
 		{ name = "reset", selection = 1, description =
-         "Resetting features" },
+         "Resetting functions" },
 		{ name = "deflt", selection = 1, description =
          "Default values applied on level start" },
 		{ name = "hud",   selection = 1, description =
-         "Display a bunch of information on the HUD" },
+         "Additional information to display on the HUD" },
 		{ name = "input", selection = 1, description =
-         "Input Display-specific features" },
+         "Input Display-specific functions" },
 		{ name = "data",  selection = 1, description =
-         "Data" },
+         "Game data functions" },
+		{ name = "misc",  selection = 1, description =
+         "Miscellaneous functions" },
 		{ name = "delux", selection = 1, description =
-         "Mod-exclusive features that aren't present in regular Usamune" },
+         "Mod-exclusive functions that aren't present in regular Usamune" },
 	}
 	local options = {
 		timer = {
@@ -92,6 +94,10 @@ local function update_menu()
             "Replicates save/load state functions found in emulators",
 				alt = { values = {"dup", "cx4"} } },
 		},
+		misc = {
+			{ name = "music",    values = {"on", "off"}, description =
+            "Toggles sequence loading %n Does not apply to streamed music from mods" },
+      },
 		delux = {
 			{ name = "menubtn",  values = button_names,  description =
             "Sets the default button for opening the Usamune menu %n You can also use the '/usamenu' chat command" },
