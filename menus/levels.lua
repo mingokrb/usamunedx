@@ -105,6 +105,14 @@ local function arrowlerp(x, y, i)
 	arrow_pos[i].y = math.lerp(arrow_pos[i].y, y, weight)
 end
 
+local messages_durations = {
+   COPIED_SUCCESSFULLY = 75,
+   INVALID_DESTINATION = 45,
+   CAN_NOT_WARP_HERE = 45,
+}
+local copy_hold_time_max = 18
+local copy_hold_time_elapsed = 0
+
 local menu = {
    title = "",
    title_update = HOOK_ON_WARP,
@@ -163,6 +171,7 @@ function menu.render()
    visible_lines.min = math.min(math.max(1, menu.levels.current_line - 2), menu.levels.current_line, lines - 4)
 	visible_lines.max = visible_lines.min + 5
 
+   -- iterate through each level
 	for k = visible_lines.min, visible_lines.max do
 	for i = 1, menu.levels.levels_per_line do
       i = i - menu.levels.levels_per_line + (k * menu.levels.levels_per_line)
@@ -170,7 +179,6 @@ function menu.render()
       if not level then break end
 
       local target = menu.levels.pos.y - (menu.levels.separation.y * visible_lines.min)
-      --printc(target)
 
 		local level_pos = {
 			x = menu.levels.pos.x + (((i-1) % menu.levels.levels_per_line) * menu.levels.separation.x),
@@ -229,14 +237,39 @@ function menu.render()
    		if buttonPressed(A_BUTTON) and selected_level.id then
    			menu.levels.selected = true
    			local warped = warp_to_warpnode(selected_level.id, selected_level.area or 1, 1, selected_level.node or 10)
+
+            -- warp failed
             if not warped and menu.levels.selected then
-               Usamenu.bottom_message({'INVALID DESTINATION'}, 45)
+               Usamenu.bottom_message({'INVALID DESTINATION'}, messages_durations.INVALID_DESTINATION)
                sound_play('buzz')
             end
+
    			menu.levels.selected = false
    		end
-		end
 
+         -- copy IDs
+         if (gMarioStates[0].controller.buttonDown & Z_TRIG) ~= 0 then
+            copy_hold_time_elapsed = copy_hold_time_elapsed + 1
+            if copy_hold_time_elapsed == copy_hold_time_max then
+               if selected_level.is_custom then
+                  selected_level.id = gNetworkPlayers[0].currLevelNum
+                  selected_level.area = gNetworkPlayers[0].currAreaIndex
+                  selected_level.node = Usamune.last_warpnode_id
+               else
+                  local custom = levels[#levels]
+                  custom.id = selected_level.id
+                  custom.area = selected_level.area or 1
+                  custom.node = selected_level.node or 10
+                  menu.levels.selection = #levels
+               end
+
+               Usamenu.bottom_message({'COPIED SUCCESSFULLY'}, messages_durations.COPIED_SUCCESSFULLY)
+               sound_play('copy')
+            end
+         else
+            copy_hold_time_elapsed = 0
+         end
+		end
    end
 	end
 
@@ -269,13 +302,7 @@ function menu.render()
       end
       menu.levels.selection = math.clamp(menu.levels.selection, 1, #levels)
 		sound_play('change')
-	end
-
-	--[[if buttonPressed() then
-		djui_chat_message_create(tostring(menu.levels.selection))
-		djui_chat_message_create(tostring(#menu.levels.arr))
-		djui_chat_message_create("LIMIT ".. tostring(levels_limit))
-	end]]
+   end
 end
 
 

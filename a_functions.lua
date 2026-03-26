@@ -59,6 +59,8 @@ function sound_play(sound)
 		play_sound(SOUND_MENU_CLICK_CHANGE_VIEW, pos)
 	elseif sound == 'pause' then
 		play_sound(SOUND_MENU_PAUSE_2, pos)
+	elseif sound == 'copy' then
+		play_sound(SOUND_MENU_MARIO_CASTLE_WARP, pos)
 	end
 end
 

@@ -15,7 +15,6 @@ You can also easily add new menus if you got basic Lua knowledge.
 * **config,menus.main**: Finish adding submenus
 * **input**: Fix input display buttons
 * **menus.levels**: Add sound to "**Custom**" editing
-* **menus.levels**: Add copying the selected level's IDs to "**Custom**"
 * **menus.levels**: Add soft reset by holding Z for 15 frames (0.5s)
 * **menus.levels**: Warp to the level's act select instead of defaulting to act 1 (couldn't figure this out but I hope it's possible with Lua)
 * **menus.levels**: Test/fix romhack support with custom scripted levels (for decomp romhacks)
