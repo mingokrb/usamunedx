@@ -59,6 +59,8 @@ local function hud_render_behind()
    djui_hud_set_resolution(RESOLUTION_N64)
    djui_hud_set_font(FONT_CUSTOM_HUD)
 
+   --in_act_select = obj_get_first_with_behavior_id(id_bhvActSelector)
+
    timer.is_hidden = in_act_select or (Config.timer.display.value ~= 4)
 
    local right_stack = 0
@@ -132,10 +134,7 @@ local function on_warp()
       subtimer = 0
    end
    timer.is_running = true
-
-   --if obj_get_first_with_behavior_id(id_bhvActSelector) then
-   --   printc('TEM')
-   --end
+   in_act_select = false
 end
 hook_event(HOOK_ON_WARP, on_warp)
 
@@ -186,3 +185,13 @@ local function on_interact(m, obj, intType, val)
    end
 end
 hook_event(HOOK_ON_INTERACT, on_interact)
+
+
+-- basically serves as a HOOK_ON_ACT_SELECT
+local function on_obj_load(obj)
+   if get_id_from_behavior(obj.behavior) == id_bhvActSelector then
+      in_act_select = true
+   end
+end
+
+hook_event(HOOK_ON_OBJECT_LOAD, on_obj_load)

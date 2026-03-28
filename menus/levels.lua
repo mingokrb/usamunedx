@@ -196,7 +196,7 @@ function menu.render()
 			arrowlerp(level_pos.x - 10, level_pos.y + 4)
 			djui_hud_render_texture(Usamenu.tex_arrow, arrow_pos[1].x, arrow_pos[1].y, 1, 1)
 
-         -- custom level at the very end
+         -- if custom level
          if selected_level.is_custom then
             local x = level_pos.x + (menu.levels.separation.x * 1.45)
             djui_hud_print_text_rtl(string.format('%02x %02x %02x', selected_level.id, selected_level.area, selected_level.node),
@@ -212,17 +212,20 @@ function menu.render()
                local selected_info_char = (menu.levels.custom_selected_char - 1) % 2
                local steps = math.floor(16 * math.pow(10, selected_info_char - 1))
 
+               -- left - right
                if input == L_CBUTTONS then
                   menu.levels.custom_selected_char = menu.levels.custom_selected_char % 6 + 1
                elseif input == R_CBUTTONS then
                   menu.levels.custom_selected_char = (menu.levels.custom_selected_char - 2) % 6 + 1
 
+               -- up - down
                elseif input == U_CBUTTONS then
                   indexed_level_info[selected_info] = indexed_level_info[selected_info] + steps
                elseif input == D_CBUTTONS then
                   indexed_level_info[selected_info] = indexed_level_info[selected_info] - steps
                end
 
+               -- set custom IDs
                selected_level.id = math.clamp(indexed_level_info[3], 0, 255)
                selected_level.area = math.clamp(indexed_level_info[2], 0, 255)
                selected_level.node = math.clamp(indexed_level_info[1], 0, 255)
@@ -233,10 +236,11 @@ function menu.render()
 			   djui_hud_render_texture(gTextures.arrow_up, arrow_pos[2].x, arrow_pos[2].y, 1, 1)
          end
 
-   		-- enter level
+   		-- warp to selected level
    		if buttonPressed(A_BUTTON) and selected_level.id then
    			menu.levels.selected = true
    			local warped = warp_to_warpnode(selected_level.id, selected_level.area or 1, 1, selected_level.node or 10)
+   			--local warped = warp_to_level(selected_level.id, selected_level.area or 1, 1)
 
             -- warp failed
             if not warped and menu.levels.selected then
@@ -277,10 +281,11 @@ function menu.render()
    --printc(menu.levels.current_line)
 	local levels_limit = menu.levels.levels_per_line + ((menu.levels.current_line - 1) * menu.levels.levels_per_line)
 
-	-- handle other inputs --
+	-- handle level selection input
    local input = gMarioStates[0].controller.buttonPressed & (L_JPAD | R_JPAD | U_JPAD | D_JPAD)
 
    if input ~= 0 then
+      -- left - right
       if input == L_JPAD then
 		   menu.levels.selection = (menu.levels.selection - 2) % #levels + 1
          if levels[menu.levels.selection] and levels[menu.levels.selection].name == '' then
@@ -291,6 +296,8 @@ function menu.render()
          if levels[menu.levels.selection] and levels[menu.levels.selection].name == '' then
             menu.levels.selection = #levels
          end
+
+      -- up - down
    	elseif input == U_JPAD then
          menu.levels.selection = menu.levels.selection - 1
          menu.levels.selection = (menu.levels.selection - menu.levels.levels_per_line) % (#levels + 2) + 1
@@ -300,10 +307,16 @@ function menu.render()
             menu.levels.selection = #menu.levels.arr
          end
       end
+
       menu.levels.selection = math.clamp(menu.levels.selection, 1, #levels)
 		sound_play('change')
    end
 end
 
+local function use_act_select(levelNum)
+   printc('use_act_select', levelNum)
+   --return true
+end
+--hook_event(HOOK_USE_ACT_SELECT, use_act_select)
 
 return menu

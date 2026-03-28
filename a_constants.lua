@@ -1,7 +1,7 @@
 -- main table
 Usamune = {
-	-- if usamune menu enabled
-	in_menu = false,
+   -- if usamune menu enabled
+   in_menu = false,
    last_warpnode_id = 0,
 
    buttons = {
@@ -34,10 +34,9 @@ end
 screen_w, screen_h = 0, 0
 
 local function hud_render()
-	djui_hud_set_resolution(RESOLUTION_N64)
-	
-	screen_w = djui_hud_get_screen_width()
-	screen_h = djui_hud_get_screen_height()
+   djui_hud_set_resolution(RESOLUTION_N64)
+   screen_w = djui_hud_get_screen_width()
+   screen_h = djui_hud_get_screen_height()
 end
 hook_event(HOOK_ON_HUD_RENDER, hud_render)
 
