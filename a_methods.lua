@@ -10,10 +10,10 @@ function string:split(separator)
 end
 
 -- concatenate array values into a string
-function table.join(arr, separator)
+function table.join(arr, concatenator)
 	local str = ""
 	for i, item in ipairs(arr) do
-		str = str .. (separator or " ") .. tostring(item)
+		str = str .. (concatenator or " ") .. tostring(item)
 	end
 	return str
 end

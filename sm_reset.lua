@@ -1,9 +1,12 @@
 -- features from the RESET submenu --
 
 local function restart_level()
+   Usamune.level_is_restarting = true
    local g = gNetworkPlayers[0]
 	warp_to_warpnode(g.currLevelNum, g.currAreaIndex, g.currActNum, Usamune.last_warpnode_id)
 	--warp_to_level(warp_info.levelNum, warp_info.areaIdx, warp_info.actNum)
+   gMarioStates[0].health = Usamune.last_health
+   Usamune.hud.attempts = Usamune.hud.attempts + 1
 end
 
 local function mario_update(m)

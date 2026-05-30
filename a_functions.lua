@@ -36,11 +36,9 @@ end
 
 -- calculate position relative to screen center
 function from_screen_center(x, y)
-	local pos = { x = 0, y = 0 }
-	pos.x = (screen_w / 2) + x
-	pos.y = (screen_h / 2) + y
-
-	return pos
+	x = (screen.width / 2) + (x or 0)
+	y = (screen.height / 2) + (y or 0)
+	return { x = x, y = y }
 end
 
 -----------
@@ -66,13 +64,10 @@ end
 
 -- faster than having to type that entire check every single time
 function buttonPressed(button)
-	if button then
-		-- if 'button' pressed
-		return (gMarioStates[0].controller.buttonPressed & button) ~= 0
-	else
-		-- if any button pressed
-		return gMarioStates[0].controller.buttonPressed ~= 0
-	end
+	return (gMarioStates[0].controller.buttonPressed & (button or gMarioStates[0].controller.buttonPressed)) ~= 0
+end
+function buttonDown(button)
+	return (gMarioStates[0].controller.buttonDown & (button or gMarioStates[0].controller.buttonDown)) ~= 0
 end
 
 -- supports color indexes in order (1, 2, 3, 4) and RGBA keys in any order (r = 1, g = 2, b = 3, a = 4)

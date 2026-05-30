@@ -1,4 +1,4 @@
-local djui_hud_set_resolution,djui_hud_set_font,djui_hud_print_text_rtl = djui_hud_set_resolution,djui_hud_set_font,djui_hud_print_text_rtl
+local djui_hud_set_resolution,djui_hud_set_font,djui_hud_set_color,djui_hud_print_text_rtl,is_game_paused,get_id_from_behavior = djui_hud_set_resolution,djui_hud_set_font,djui_hud_set_color,djui_hud_print_text_rtl,is_game_paused,get_id_from_behavior
 
 local in_act_select = false
 
@@ -8,7 +8,7 @@ end
 
 -- timer format is entirely based on subtimer which is pure elapsed frames
 local subtimer = 0
-timer = {
+Usatimer = {
    time = {
       mins = 0,
       secs = 0,
@@ -16,6 +16,7 @@ timer = {
    },
    racetmr_screentime = 0,
 
+   render_layer = "behind",
    is_paused = false, -- paused by opening the menu
    is_running = true,
    is_hidden = true,
@@ -25,7 +26,7 @@ timer = {
          secs = 0,
          ms = 0,
       },
-      max_lifespan = 60, -- in frames
+      max_lifespan = 30, -- in frames
       remaining = 0,
    },
 }
@@ -34,6 +35,7 @@ local interactions = {
    -- [INTERACTION_TYPE] = interactionValue
    stop = {
       [INTERACT_WARP_DOOR] = true,
+      [INTERACT_BBH_ENTRANCE] = true,
    },
    screenshot = {
       [INTERACT_WARP] = true,
@@ -45,29 +47,32 @@ local interactions = {
       [INTERACT_WATER_RING] = true,
       [INTERACT_KOOPA_SHELL] = true,
       [INTERACT_TEXT] = true,
-      [INTERACT_BBH_ENTRANCE] = true,
    }
 }
 
 local timer_pos = {
-   x = screen_w - 24,
+   x = 0,
    y = 20,
    separation = 20,
 }
 
-local function hud_render_behind()
+local function render_timers()
+   if Usamune.in_menu or is_game_paused() then
+      Usatimer.render_layer = "front"
+   else
+      Usatimer.render_layer = "behind"
+   end
    djui_hud_set_resolution(RESOLUTION_N64)
    djui_hud_set_font(FONT_CUSTOM_HUD)
 
-   --in_act_select = obj_get_first_with_behavior_id(id_bhvActSelector)
-
-   timer.is_hidden = in_act_select or (Config.timer.display.value ~= 4)
+   Usatimer.is_hidden = in_act_select or (Config.timer.display.value ~= 4)
+   Usatimer.is_hidden = Usatimer.is_hidden or (Config.timer.pssrace.value == 2 and Usatimer.racetmr_screentime > 0)
 
    local right_stack = 0
    if not Usamune.in_menu then
       right_stack = right_stack
       -- main timer on screen
-         + int(not timer.is_hidden)
+         + int(not Usatimer.is_hidden)
 
       -- race/slide timer on screen
       if Config.timer.pssrace.value == 5 then
@@ -75,51 +80,67 @@ local function hud_render_behind()
       end
    end
 
-   timer_pos.x = screen_w - (Config.timer.tmrposi.value == 1 and 18 or 24)
+   timer_pos.x = screen.width - (Config.timer.tmrposi.value == 1 and 18 or 24)
    local timer_y = timer_pos.y + (right_stack * timer_pos.separation)
 
    djui_hud_set_color(255, 255, 255, 255)
    -- main timer
-   if not timer.is_hidden then
-      local timerstr = string.format("%d'%02d\"%02d", timer.time.mins, timer.time.secs, timer.time.ms)
+   if Usamune.in_menu or not Usatimer.is_hidden then
+      local timerstr = string.format("%d'%02d\"%02d", Usatimer.time.mins, Usatimer.time.secs, Usatimer.time.ms)
       djui_hud_print_text_rtl(timerstr, timer_pos.x, timer_y, 1)
    end
    -- screenshot timer
-   if timer.shot.remaining > 0 then
-      local t = timer.shot.time
+   if Usatimer.shot.remaining > 0 then
+      local t = Usatimer.shot.time
       local timerstr = string.format("%d'%02d\"%02d", t.mins, t.secs, t.ms)
       djui_hud_print_text_rtl(timerstr, timer_pos.x, timer_y + timer_pos.separation, 1)
    end
 end
-hook_event(HOOK_ON_HUD_RENDER_BEHIND, hud_render_behind)
+
+local function on_hud_render_behind()
+   if Usatimer.render_layer == "behind" then
+      render_timers()
+   end
+end
+local function on_hud_render()
+   if Usatimer.render_layer == "front" then
+      render_timers()
+   end
+end
+hook_event(HOOK_ON_HUD_RENDER_BEHIND, on_hud_render_behind)
+hook_event(HOOK_ON_HUD_RENDER, on_hud_render)
 
 local function update()
-   if not timer.is_running or Usamune.in_menu then return end
+   if not Usatimer.is_running or Usamune.in_menu then return end
 
    -- update timer
    subtimer = subtimer + 1
-   timer.time.ms = math.floor((subtimer / 30) * 100) % 100
-   timer.time.secs = math.floor(subtimer / 30) % 60
-   timer.time.mins = math.floor(subtimer / (30 * 60))
+   Usatimer.time.ms = math.floor((subtimer / 30) * 100) % 100
+   Usatimer.time.secs = math.floor(subtimer / 30) % 60
+   Usatimer.time.mins = math.floor(subtimer / (30 * 60))
 
    -- update screenshot
-   if timer.shot.remaining > 0 then
-      timer.shot.remaining = timer.shot.remaining - 1
+   if Usatimer.shot.remaining > 0 then
+      Usatimer.shot.remaining = Usatimer.shot.remaining - 1
    end
 
 
    -- PSSRACE
    if Config.timer.pssrace.value == 1 then
-      hud_set_value(HUD_DISPLAY_FLAGS, hud_get_value(HUD_DISPLAY_FLAGS) & ~HUD_DISPLAY_FLAGS_TIMER)
+      Usatimer.racetmr_screentime = 0
 
    elseif Config.timer.pssrace.value == 2 or Config.timer.pssrace.value == 4 then
       if level_control_timer_running() > 0 then
-         timer.racetmr_screentime = 30
+         Usatimer.racetmr_screentime = 30
       end
    
-      if timer.racetmr_screentime > 0 then
-         timer.racetmr_screentime = timer.racetmr_screentime - 1
+      if Usatimer.racetmr_screentime > 0 then
+         Usatimer.racetmr_screentime = Usatimer.racetmr_screentime - 1
       end
+   end
+
+   if Usatimer.racetmr_screentime <= 0 then
+      hud_set_value(HUD_DISPLAY_FLAGS, hud_get_value(HUD_DISPLAY_FLAGS) & ~HUD_DISPLAY_FLAGS_TIMER)
    end
 end
 hook_event(HOOK_UPDATE, update)
@@ -133,25 +154,26 @@ local function on_warp()
    if should_restart_timer then
       subtimer = 0
    end
-   timer.is_running = true
+   Usatimer.is_running = true
+   Usatimer.shot.remaining = 0
    in_act_select = false
 end
 hook_event(HOOK_ON_WARP, on_warp)
 
 -- timer functions --
-function timer.stop(hideTimer)
-   timer.is_running = false
+function Usatimer.stop(hideTimer)
+   Usatimer.is_running = false
 
    if hideTimer then
    end
 end
-function timer.screenshot(hideTimer)
-   timer.shot.time = {
-      mins = timer.time.mins,
-      secs = timer.time.secs,
-      ms = timer.time.ms,
+function Usatimer.screenshot(hideTimer)
+   Usatimer.shot.time = {
+      mins = Usatimer.time.mins,
+      secs = Usatimer.time.secs,
+      ms = Usatimer.time.ms,
    }
-   timer.shot.remaining = timer.shot.max_lifespan
+   Usatimer.shot.remaining = Usatimer.shot.max_lifespan
 
    if hideTimer then
    end
@@ -165,7 +187,7 @@ local function on_interact(m, obj, intType, val)
    -- red coins
    if intType == INTERACT_COIN then
       if get_id_from_behavior(obj.behavior) == id_bhvRedCoin then
-         timer.screenshot()
+         Usatimer.screenshot()
          return
       end
    end
@@ -173,14 +195,14 @@ local function on_interact(m, obj, intType, val)
    -- stop timer
    for i, value in pairs(interactions.stop) do
       if i == intType and value == val then
-         timer.stop()
+         Usatimer.stop()
          return
       end
    end
    -- screenshot timer
    for i, value in pairs(interactions.screenshot) do
       if i == intType and value == val then
-         timer.screenshot()
+         Usatimer.screenshot()
       end
    end
 end

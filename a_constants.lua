@@ -1,8 +1,16 @@
+local djui_hud_set_resolution,djui_hud_get_screen_width,djui_hud_get_screen_height = djui_hud_set_resolution,djui_hud_get_screen_width,djui_hud_get_screen_height
+
+_G.USAMUNE_VERSION = "1.0.0"
+
 -- main table
 Usamune = {
+   time = 0,
    -- if usamune menu enabled
    in_menu = false,
+   -- for warps/resets
+   level_is_restarting = false,
    last_warpnode_id = 0,
+   last_health = gMarioStates[0].health,
 
    buttons = {
       indexed = {
@@ -31,15 +39,23 @@ for i, button in ipairs(Usamune.buttons.indexed) do
 end
 
 -- screen resolution
-screen_w, screen_h = 0, 0
+screen = {
+   width = 0,
+   height = 0,
+}
 
 local function hud_render()
    djui_hud_set_resolution(RESOLUTION_N64)
-   screen_w = djui_hud_get_screen_width()
-   screen_h = djui_hud_get_screen_height()
+   screen.width = djui_hud_get_screen_width()
+   screen.height = djui_hud_get_screen_height()
 end
 hook_event(HOOK_ON_HUD_RENDER, hud_render)
 
 
 -- gameplay stats
-Usamune.dust_count = 0 -- resets on warp
+Usamune.hud = {
+   -- resets on warp
+   igmenu = 0,
+   dust_count = 0,
+   attempts = 0,
+}

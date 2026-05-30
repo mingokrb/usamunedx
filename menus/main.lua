@@ -42,10 +42,60 @@ local function update_menu()
             "Sets the position of the timer" },
 		},
 		misct = {
+			{ name = "misctmr",  values = {"off", "on"}, description =
+            "Highlights the current time when a condition is met\nThe following options are all the available conditions" },
 			{ name = "numdisp",  values = {"off", "on"}, description =
-            "\"Screenshots\" the timer when you collect a red coin or find a secret" },
+            "When you collect a red coin or find a secret" },
+			{ name = "xcam",     values = {"off", "on"}, description =
+            "When you touch the ground after getting a star" },
+			{ name = "bswitch",  values = {"off", "on"}, description =
+            "When you press a \\#cc4040\\cap \\#2070cc\\swi\\#40cc40\\tch" },
+			{ name = "pswitch",  values = {"off", "on"}, description =
+            "When you press a \\#aa70cc\\purple switch" },
+			{ name = "ride",     values = {"off", "on"}, description =
+            "When you start riding a Koopa shell" },
+			{ name = "chest",    values = {"off", "on"}, description =
+            "When you open a chest" },
+			{ name = "crystal",  values = {"off", "on"}, description =
+            "When you ........ a crystal" },
+			{ name = "enemy",    values = {"off", "on"}, description =
+            "When you defeat an enemy" },
+			{ name = "exclbox",  values = {"off", "on"}, description =
+            "When you break an [!] box" },
+			{ name = "corkbox",  values = {"off", "on"}, description =
+            "When you grab a cork box" },
+			{ name = "objgrab",   values = {"off", "on"}, description =
+            "When you grab an object" },
+			{ name = "ldgegrb",  values = {"off", "on"}, description =
+            "When you perform a ledge-grab" },
+			{ name = "polegrb",  values = {"off", "on"}, description =
+            "When you perform a pole-grab" },
 			{ name = "wk",       values = {"off", "on"}, description =
-            "\"Screenshots\" the timer when you wall kick" },
+            "When you perform a wall-kick" },
+			{ name = "wallhit",  values = {"off", "on"}, description =
+            "When you hit a wall" },
+			{ name = "clip",     values = {"off", "on"}, description =
+            "When you clip out-of-bounds" },
+			{ name = "surface",  values = {"off", "on"}, description =
+            "When you reach the surface" },
+			{ name = "flip",     values = {"off", "on"}, description =
+            "When you perform a flip" },
+			{ name = "rollout",  values = {"off", "on"}, description =
+            "When you perform a roll-out" },
+			{ name = "dive",     values = {"off", "on"}, description =
+            "When you perform a dive" },
+			{ name = "ljsldk",   values = {"off", "on"}, description =
+            "When you perform a lj-sldk idk" },
+			{ name = "tj",       values = {"off", "on"}, description =
+            "When you perform a tj" },
+			{ name = "load",     values = {"off", "on"}, description =
+            "When the Load" },
+			{ name = "bowser",   values = {"off", "on"}, description =
+            "When you grab Bowser's tail" },
+			{ name = "coin",     values = {"off", "on"}, description =
+            "When you collect a coin" },
+			{ name = "oneup",     values = {"off", "on"}, description =
+            "When you collect an extra life" },
 		},
 		reset = {
 			{ name = "lbutton",  values = {"none", "lreset", "sslect"}, description =
@@ -65,26 +115,28 @@ local function update_menu()
 		},
 		hud = {
 			{ name = "life",     values = {"normal", "igmenu", "fspeed", "vspeed", "vellen"}, description =
-            "Overrides the lives count with player info" },
+            "Overrides the life counter with player info" },
 			{ name = "star",     values = {"normal", "igmenu", "fspeed", "vspeed", "vellen"}, description =
-            "Overrides the stars counter with player info" },
+            "Overrides the star counter with player info" },
 			{ name = "dust",     values = {"off", "on"}, description =
             "Shows a counter that increases when you miss a 1st frame roll-out" },
 			{ name = "wkdisp",   values = {"off", "on"}, description =
             "Shows the wall kick frame on screen for a second when you wall kick" },
 			{ name = "attempt",  values = {"off", "on", "alert", "grab"}, description =
             "Shows the number of attempts on the current level (increases on level reset)" },
+			{ name = "bpsdisp",  values = {"off", "on"}, description =
+            "Shows the number of buttons pressed per second" },
 		},
 		input = {
 			{ name = "stick",    values = {"off", "onval", "onvis", "oncomb"}, description =
             "Displays your stick input axis, appearance, or both",
 				alt = { values = {"small", "large"} } },
+			{ name = "stkbase",  values = {"square", "circle"}, description =
+            "Stick base appearance (mildly affects stick axis display)",
+				enable_if = (Config.input.stick.value > 2) },
 			{ name = "stkaxis",  values = {"usamun", "cdelux"}, description =
             "Raw stick axis (max ~127) or Usamune-accurate axis (max ~64)",
 				enable_if = (Config.input.stick.value == 2 or Config.input.stick.value == 4) },
-			{ name = "stickbg",  values = {"square", "circle"}, description =
-            "Stick base appearance (mildly affects stick axis display)",
-				enable_if = (Config.input.stick.value > 2) },
 			{ name = "buttons",  values = {"off", "asmall", "alarge", "bsmall", "blarge"}, description =
             "Displays your button inputs",
 				alt = { values = {"usamune", "cdeluxe"} } },
@@ -96,13 +148,13 @@ local function update_menu()
 		},
 		misc = {
 			{ name = "music",    values = {"on", "off"}, description =
-            "Toggles sequence loading %n Does not apply to streamed music from mods" },
+            "Toggles sequence loading\nDoes not apply to streamed music from mods" },
       },
 		delux = {
 			{ name = "menubtn",  values = button_names,  description =
-            "Sets the default button for opening the Usamune menu %n You can also use the '/usamenu' chat command" },
+            "Sets the default button for opening the Usamune menu\nYou can also use the \\#aaaaaa\\/usamenu\\#ffffff\\ chat command" },
 			{ name = "hints",    values = {"off", "on"}, description =
-            "Shows submenu/option descriptions, just like this %n Please refer to the official Usamune ROM Manual for more detailed info  " },
+            "Shows submenu/option descriptions, just like this\nPlease refer to the \\#dddd60\\official Usamune ROM Manual\\#ffffff\\ for more detailed info  " },
 			{ name = "arwlerp",  values = {"off", "on"}, description =
             "Makes the selection arrow move more smoothly", value = 7,
 				input = { text = "weight %d",    length = 1, min = 1, max = 9 } },
@@ -153,7 +205,11 @@ local function arrowlerp(x, y, i)
 	arrow_pos[i].y = math.lerp(arrow_pos[i].y, y, weight)
 end
 
+local scroll_time = 0
+local scroll_max_time = 10
+
 local menu = {
+   name = "main",
    title = "MENU",
 
    main = {
@@ -195,11 +251,11 @@ function menu.update_once()
 end
 
 function menu.render()
-	local visible_submenus = {}
 	-- submenus
+	local visible_submenus = {}
 	visible_submenus.min = math.min(math.max(1, menu.main.submenus.selection - 2), menu.main.submenus.selection, #menu.main.submenus.arr - 4)
 	visible_submenus.max = visible_submenus.min + 4
-	
+
 	for i = visible_submenus.min, visible_submenus.max do
 		local submenu = menu.main.submenus.arr[i]
       if not submenu then break end
@@ -219,182 +275,204 @@ function menu.render()
 			djui_hud_render_texture(Usamenu.tex_arrow, arrow_pos[1].x, arrow_pos[1].y, 1, 1)
 		end
 	end
+
 	-- options
-	for i = 0, 5 do
-		local oindex = (i + 1)
-		local option = menu.main.options.arr[menu.main.submenus.arr[menu.main.submenus.selection].name][oindex]
+	local visible_options = {}
+	local submenu = menu.main.submenus.arr[menu.main.submenus.selection]
+	visible_options.min = math.min(math.max(1, submenu.selection - 2), submenu.selection, math.max(1, #menu.main.options.arr[submenu.name] - 4))
+	visible_options.max = visible_options.min + 4
+
+	for i = visible_options.min, visible_options.max do
+		local option = menu.main.options.arr[submenu.name][i]
 		if not option then break end
-		
-		local selection = menu.main.submenus.arr[menu.main.submenus.selection].selection
+
 		local offset = from_screen_center(menu.main.options.offset_x, 0)
-		local option_y = 58 + (i * menu.main.options.separation)
-		
+		local target = 58 - (menu.main.options.separation * visible_options.min)
+		local option_y = target + (i * menu.main.options.separation)
+
 		-- change color if disabled
 		local option_color = (option.enable_if) and 255 or 170
-		
+		local values_x = (screen.width - menu.main.submenus.pos.x)
+
 		-- render option names
 		djui_hud_set_color(option_color, option_color, option_color, Usamenu.opacity)
 		djui_hud_print_text(filter_text(option.name), offset.x, option_y, 1)
-		-- render arrow next to selection
-		if menu.main.submenus.selected and oindex == selection then
+
+		if menu.main.submenus.selected and i == submenu.selection then
+		   -- render arrow next to selection
 			arrowlerp(offset.x - 10, option_y + 5)
 			djui_hud_render_texture(Usamenu.tex_arrow, arrow_pos[1].x, arrow_pos[1].y, 1, 1)
-		end
-		
-		local values_x = (screen_w - menu.main.submenus.pos.x)
-		
-		if menu.main.submenus.selected and oindex == selection and option.value > 1 then
-			-- alt values
-			if option.alt then
-				current_selection_has_alt_values = true
-				
-				for k, alt in ipairs(option.alt.values) do
-					local alt_y = (screen_h - (#option.alt.values * 18) - 16) + ((k - 1) * 18)
-					-- render arrow
-					if k == option.alt.value then
-						arrowlerp(values_x - djui_hud_measure_text(alt) - 10, alt_y + 5, 2)
-						djui_hud_render_texture(Usamenu.tex_arrow, arrow_pos[2].x, arrow_pos[2].y, 1, 1)
-						djui_hud_set_color(255, 255, 255, Usamenu.opacity)
-					else
-						djui_hud_set_color(170, 170, 170, Usamenu.opacity)
-					end
-					-- render text
-					djui_hud_print_text_rtl(filter_text(alt), values_x, alt_y, 1)
-					djui_hud_set_color(255, 255, 255, Usamenu.opacity)
-				end
-				
-				-- input
-				if buttonPressed(U_CBUTTONS) then
-					option.alt.value = (option.alt.value - 2) % #option.alt.values + 1
-					save_config(menu.main.submenus.arr[menu.main.submenus.selection].name, option.name, option.alt.value, true)
-					main_menu_update()
-					sound_play('change')
-				-- c-right
-				elseif buttonPressed(D_CBUTTONS) then
-					option.alt.value = option.alt.value % #option.alt.values + 1
-					save_config(menu.main.submenus.arr[menu.main.submenus.selection].name, option.name, option.alt.value, true)
-					main_menu_update()
-					sound_play('change')
-				end
-			
-			-- input values
-			elseif option.input then
-				current_selection_has_alt_values = true
-            local inputs = menu.main.options.input
-				local input_y = (screen_h - 40)
 
-				-- render text
-            --local hue = inputs.edit_mode and 255 or 170
-				--djui_hud_set_color(hue, hue, hue, Usamenu.opacity)
-				djui_hud_set_color(255, 255, 255, Usamenu.opacity)
-				djui_hud_print_text_rtl(filter_text(string.format(option.input.text, option.input.value)), values_x + 12, input_y - 18, 1)
+      	if option.value > 1 then
+      		-- alt values
+      		if option.alt then
+      			current_selection_has_alt_values = true
 
-            -- switch edit mode
-            if buttonPressed(A_BUTTON) then
-               inputs.edit_mode = not inputs.edit_mode
-               sound_play('switchMenu')
-            end
+      			for k, alt in ipairs(option.alt.values) do
+      				local alt_y = (screen.height - (#option.alt.values * 18) - 16) + ((k - 1) * 18)
+      				-- render arrow
+      				if k == option.alt.value then
+      					arrowlerp(values_x - djui_hud_measure_text(alt) - 10, alt_y + 5, 2)
+      					djui_hud_render_texture(Usamenu.tex_arrow, arrow_pos[2].x, arrow_pos[2].y, 1, 1)
+      					djui_hud_set_color(255,255,255, Usamenu.opacity)
+      				else
+      					djui_hud_set_color(170,170,170, Usamenu.opacity)
+      				end
+      				-- render text
+      				djui_hud_print_text_rtl(filter_text(alt), values_x, alt_y, 1)
+      				djui_hud_set_color(255,255,255, Usamenu.opacity)
+      			end
 
-            if not inputs.edit_mode then
-               djui_hud_print_text_rtl("PRESSA TO EDIT", values_x + 12, input_y, 1)
-            else
-   				for k = 1, option.input.length do
-   					-- render arrow
-   					if k == inputs.selected_char then
-   						arrowlerp(values_x - (k * 12) + 16, input_y, 2)
-   						djui_hud_render_texture(gTextures.arrow_up, arrow_pos[2].x, arrow_pos[2].y, 1, 1)
-   					end
-   				end
+      			-- input
+      			if buttonPressed(U_CBUTTONS) then
+      				option.alt.value = (option.alt.value - 2) % #option.alt.values + 1
+      				save_config(submenu.name, option.name, option.alt.value, true)
+      				main_menu_update()
+      				sound_play('change')
+      			-- c-right
+      			elseif buttonPressed(D_CBUTTONS) then
+      				option.alt.value = option.alt.value % #option.alt.values + 1
+      				save_config(submenu.name, option.name, option.alt.value, true)
+      				main_menu_update()
+      				sound_play('change')
+      			end
 
-   				-- handle input
-               local input = gMarioStates[0].controller.buttonPressed & (L_CBUTTONS | R_CBUTTONS | U_CBUTTONS | D_CBUTTONS)
-               if input ~= 0 then
-                  local steps = math.pow(10, inputs.selected_char - 1)
-   
-                  -- left - right
-                  if option.input.length > 1 then
-                     if input == L_CBUTTONS then
-                        inputs.selected_char = inputs.selected_char % option.input.length + 1
-                     elseif input == R_CBUTTONS then
-                        inputs.selected_char = (inputs.selected_char - 2) % option.input.length + 1
-                     end
-                  end
-                  -- up - down
-                  if input == U_CBUTTONS then
-                     option.input.value = option.input.value + steps
-                  elseif input == D_CBUTTONS then
-                     option.input.value = option.input.value - steps
-                  end
+      		-- input values
+      		elseif option.input then
+      			current_selection_has_alt_values = true
+               local inputs = menu.main.options.input
+      			local input_y = (screen.height - 40)
 
-                  option.input.value = (option.input.value - 1) % option.input.max + 1
-                  option.input.value = math.clamp(option.input.value, option.input.min, option.input.max)
+   				-- render text
+               --local hue = inputs.edit_mode and 255 or 170
+   				--djui_hud_set_color(hue, hue, hue, Usamenu.opacity)
+   				djui_hud_set_color(255,255,255, Usamenu.opacity)
+   				djui_hud_print_text_rtl(filter_text(string.format(option.input.text, option.input.value)), values_x + 12, input_y - 18, 1)
 
-   					save_config(menu.main.submenus.arr[menu.main.submenus.selection].name, option.name, option.input.value, true)
-   					main_menu_update()
-   					sound_play('change')
+               -- switch edit mode
+               if buttonPressed(A_BUTTON) then
+                  inputs.edit_mode = not inputs.edit_mode
+                  sound_play('switchMenu')
                end
-            end
-				--	option.input.value = option.input.value % option.input.max + 1
-				-- option.input.value = (option.input.value - 2) % option.input.max + 1
-			else
-				current_selection_has_alt_values = false
-			end
-		end
 
+               if not inputs.edit_mode then
+                  djui_hud_print_text_rtl("PRESSA TO EDIT", values_x + 12, input_y, 1)
+               else
+      				for k = 1, option.input.length do
+      					-- render arrow
+      					if k == inputs.selected_char then
+      						arrowlerp(values_x - (k * 12) + 16, input_y, 2)
+      						djui_hud_render_texture(gTextures.arrow_up, arrow_pos[2].x, arrow_pos[2].y, 1, 1)
+      					end
+      				end
+
+      				-- handle input
+                  local input = gMarioStates[0].controller.buttonPressed & (L_CBUTTONS | R_CBUTTONS | U_CBUTTONS | D_CBUTTONS)
+                  if input ~= 0 then
+                     local steps = math.pow(10, inputs.selected_char - 1)
+
+                     -- left - right
+                     if option.input.length > 1 then
+                        if input == L_CBUTTONS then
+                           inputs.selected_char = inputs.selected_char % option.input.length + 1
+                        elseif input == R_CBUTTONS then
+                           inputs.selected_char = (inputs.selected_char - 2) % option.input.length + 1
+                        end
+                     end
+                     -- up - down
+                     if input == U_CBUTTONS then
+                        option.input.value = option.input.value + steps
+                     elseif input == D_CBUTTONS then
+                        option.input.value = option.input.value - steps
+                     end
+
+                     option.input.value = (option.input.value - 1) % option.input.max + 1
+                     option.input.value = math.clamp(option.input.value, option.input.min, option.input.max)
+
+      					save_config(submenu.name, option.name, option.input.value, true)
+      					main_menu_update()
+      					sound_play('change')
+                  end
+               end
+   				--	option.input.value = option.input.value % option.input.max + 1
+   				-- option.input.value = (option.input.value - 2) % option.input.max + 1
+   			else
+   				current_selection_has_alt_values = false
+   			end
+   		end
+      end
 		-- value
-		--djui_chat_message_create(tostring(option.enable_if))
 		djui_hud_print_text_rtl(filter_text(option.values[option.value]), values_x, option_y, 1)
 	end
 
+   local submenus = menu.main.submenus
+   local options = menu.main.options
+
 	-- handle other inputs --
 	-- submenus
-	if not menu.main.submenus.selected then
+	if not submenus.selected then
 		-- allow scroll if more than 1
-		if #menu.main.submenus.arr > 1 then
-			-- up
-			if buttonPressed(U_JPAD) then
-				menu.main.submenus.selection = (menu.main.submenus.selection - 2) % #menu.main.submenus.arr + 1
-				sound_play('change')
-			-- down
-			elseif buttonPressed(D_JPAD) then
-				menu.main.submenus.selection = menu.main.submenus.selection % #menu.main.submenus.arr + 1
-				sound_play('change')
-			end
+		if #submenus.arr > 1 then
+         local input = gMarioStates[0].controller.buttonDown & (U_JPAD | D_JPAD)
+         if input ~= 0 and not Usamenu.opening_button_pressed then
+            scroll_time = scroll_time + 1
+
+            if scroll_time == 1 or scroll_time >= scroll_max_time then
+               if scroll_time > 1 then
+                  scroll_time = scroll_max_time - 3
+               end
+			      -- up - down
+   			   if input == U_JPAD then
+                  submenus.selection = Usamenu.move_selection(submenus.selection, 1, #submenus.arr, -1)
+               elseif input == D_JPAD then
+                  submenus.selection = Usamenu.move_selection(submenus.selection, 1, #submenus.arr, 1)
+               end
+            end
+         else
+            scroll_time = 0
+         end
 		end
 		-- right
 		if buttonPressed(R_JPAD) then
 			-- select submenu
-			menu.main.submenus.selected = true
+			submenus.selected = true
 			sound_play('change')
 		end
 	end
 
 	-- options
-	if menu.main.submenus.selected and not menu.main.options.input.edit_mode then
-		local submenu = menu.main.submenus.arr[menu.main.submenus.selection]
-		local options = menu.main.options.arr[submenu.name]
+	if submenus.selected and not options.input.edit_mode then
+		local submenu = submenus.arr[submenus.selection]
+		local options = options.arr[submenu.name]
 		-- allow scroll if more than 1
-		if #options > 1 then
-			-- up
-			if buttonPressed(U_JPAD) then
-				local prev = submenu.selection
-				while submenu.selection == prev or not options[submenu.selection].enable_if do
-					submenu.selection = (submenu.selection - 2) % #options + 1
-				end
-				sound_play('change')
-			-- down
-			elseif buttonPressed(D_JPAD) then
-				local prev = submenu.selection
-				while submenu.selection == prev or not options[submenu.selection].enable_if do
-					submenu.selection = submenu.selection % #options + 1
-				end
-				sound_play('change')
-			end
+      local input = gMarioStates[0].controller.buttonDown & (U_JPAD | D_JPAD)
+		if input ~= 0 and #options > 1 and not Usamenu.opening_button_pressed then
+         scroll_time = scroll_time + 1
+         if scroll_time == 1 or scroll_time >= scroll_max_time then
+            if scroll_time > 1 then
+               scroll_time = scroll_max_time - 3
+            end
+
+   			local prev = submenu.selection
+   			-- up - down
+   			if input == U_JPAD then
+   				while submenu.selection == prev or not options[submenu.selection].enable_if do
+                  submenu.selection = Usamenu.move_selection(submenu.selection, 1, #options, -1, '')
+   				end
+   			elseif input == D_JPAD then
+   				while submenu.selection == prev or not options[submenu.selection].enable_if do
+                  submenu.selection = Usamenu.move_selection(submenu.selection, 1, #options, 1, '')
+   				end
+   			end
+            sound_play('change')
+         end
+      else
+         scroll_time = 0
 		end
 		
 		-- unselect submenu
 		if buttonPressed(L_JPAD) then
-			menu.main.submenus.selected = false
+			submenus.selected = false
 			sound_play('change')
 		end
 		
@@ -403,110 +481,16 @@ function menu.render()
 			local option = options[submenu.selection]
 			-- c-left
 			if buttonPressed(L_CBUTTONS) then
-				option.value = (option.value - 2) % #option.values + 1
+            option.value = Usamenu.move_selection(option.value, 1, #option.values, -1)
 				save_config(submenu.name, option.name, option.value)
 				main_menu_update()
-				sound_play('change')
 			-- c-right
 			elseif buttonPressed(R_CBUTTONS) then
-				option.value = option.value % #option.values + 1
+            option.value = Usamenu.move_selection(option.value, 1, #option.values, 1)
 				save_config(submenu.name, option.name, option.value)
 				main_menu_update()
-				sound_play('change')
 			end
 		end
-	end
-	
-	
-	-- hints/descriptions --
-	-- credits to the roblox bubble messages mod creator for some of this code!!!
-	if Config.delux.hints.value > 1 then
-		-- get submenu/option description if any
-		local hint_text
-		if menu.main.submenus.selected then
-         -- fucking mess ik, sorry
-			hint_text = menu.main.options.arr[menu.main.submenus.arr[menu.main.submenus.selection].name][menu.main.submenus.arr[menu.main.submenus.selection].selection].description
-		else
-			hint_text = menu.main.submenus.arr[menu.main.submenus.selection].description
-		end
-		
-		-- text
-		local text = {
-			text = hint_text or "No description",
-			pos = from_screen_center(0, 0),
-			scale = 0.5,
-			font_size = 14,
-			
-			lines = { "" },
-			current_line = 1,
-			line_width_max = screen_w + 20,
-		}
-		
-		-- split words
-		text.words = string.split(text.text, " ")
-		
-		-- description text lines
-		for i, word in next, text.words do
-			local wline = text.lines[text.current_line]
-			-- add space before word if not the first
-			wline = wline .. (i > 1 and " " or "") .. word
-			
-			local word_width = djui_hud_measure_text(word) * text.scale
-			-- if word is line break (default '%n')
-			local is_line_break = false
-			
-			-- if word width greater than limit or line break
-			if word_width >= text.line_width_max or word == "%n" then
-				-- line break or not
-				if word == "%n" then
-					is_line_break = true
-					word = ""
-				else
-					is_line_break = false
-				end
-				
-				-- add space before word if not the first nor a line break
-				wline = text.lines[text.current_line] .. ((i > 1 and not is_line_break) and " " or "")
-				
-				-- for each character in word 
-				for c = 1, #word do
-					local character = string.sub(word, c, c)
-					-- add character to line
-					wline = wline .. character
-					
-					local line_width = djui_hud_measure_text(wline) * text.scale
-					if line_width > text.line_width_max or is_line_break then
-						text.current_line = text.current_line + 1
-						wline = character
-					end
-					text.lines[text.current_line] = wline
-				end
-			end
-			
-			local line_width = djui_hud_measure_text(wline) * text.scale
-			if line_width > text.line_width_max or is_line_break then
-				text.current_line = text.current_line + 1
-				wline = is_line_break and "" or word
-			end
-			text.lines[text.current_line] = wline
-		end
-		
-		-- render bg
-		djui_hud_set_color(0, 0, 0, Usamenu.opacity * 0.5)
-		djui_hud_render_rect(0, screen_h - 32 - ((#text.lines - 1) * text.font_size), screen_w + 4, 32 + ((#text.lines - 1) * text.font_size))
-		
-		-- render text
-		djui_hud_set_font(FONT_NORMAL)
-		
-		for i, line in next, text.lines do
-			local text_y = (screen_h - 25) + ((i - 1) * text.font_size) - ((#text.lines - 1) * text.font_size)
-			djui_hud_set_color(0, 0, 0, Usamenu.opacity)
-			djui_hud_print_text_centered(line, text.pos.x + 1, text_y + 1, 0.5)
-			djui_hud_set_color(255, 255, 255, Usamenu.opacity)
-			djui_hud_print_text_centered(line, text.pos.x, text_y, 0.5)
-		end
-		
-		djui_hud_set_font(FONT_HUD)
 	end
 end
 
