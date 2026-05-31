@@ -9,13 +9,20 @@ function string:split(separator)
    return arr
 end
 
+-- replace element in string with another
+function string.replace(this, what, with)
+   local str, _ = this:gsub(what, with)
+   return str
+end
+
+
 -- concatenate array values into a string
 function table.join(arr, concatenator)
-	local str = ""
-	for i, item in ipairs(arr) do
-		str = str .. (concatenator or " ") .. tostring(item)
-	end
-	return str
+   local str = ""
+   for i, item in ipairs(arr) do
+      str = str .. (concatenator or " ") .. tostring(item)
+   end
+   return str
 end
 
 -- pick random item from array

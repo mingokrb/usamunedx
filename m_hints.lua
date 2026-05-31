@@ -83,5 +83,4 @@ function hints.render.level_select(menu)
    hints.render_text(hint_text)
 end
 
-
 return hints

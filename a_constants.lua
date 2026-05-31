@@ -1,6 +1,6 @@
 local djui_hud_set_resolution,djui_hud_get_screen_width,djui_hud_get_screen_height = djui_hud_set_resolution,djui_hud_get_screen_width,djui_hud_get_screen_height
 
-_G.USAMUNE_VERSION = "1.0.0"
+_G.USAMUNE_VERSION = "1.93.0"
 
 -- main table
 Usamune = {

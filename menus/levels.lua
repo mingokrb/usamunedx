@@ -248,7 +248,17 @@ function menu.render()
          -- warp to selected level
          if buttonPressed(A_BUTTON) and selected_level.id then
             if cl_text == "DE AD 26" then
-                  Usamenu.bottom_message({"...", "STOP", "NO."}, messages_durations.INVALID_DESTINATION)
+                  if VERSION_NUMBER < 42 or Usamune.DEAD26 then
+                     Usamenu.bottom_message({"..."}, 60)
+                  else
+                     Usamune.DEAD26 = true
+                     Usamune.soft_reset()
+                     hud_hide()
+                     set_shader_flag_enabled(SHADER_FLAG_SATURATION, true)
+                     set_shader_flag_enabled(SHADER_FLAG_BRIGHTNESS, true)
+                     set_shader_flag_value(SHADER_FLAG_SATURATION, 0)
+                     set_shader_flag_value(SHADER_FLAG_BRIGHTNESS, 0.7)
+                  end
             else
                menu.levels.selected = true
                local warped = warp_to_warpnode(selected_level.id, selected_level.area or 1, 1, selected_level.node or 10)
@@ -339,10 +349,14 @@ function menu.render()
    djui_hud_render_texture(Usamenu.tex_arrow, arrow_pos[1].x, arrow_pos[1].y, 1, 1)
 end
 
-local function use_act_select(levelNum)
-   printc('use_act_select', levelNum)
-   --return true
-end
---hook_event(HOOK_USE_ACT_SELECT, use_act_select)
+hook_event(HOOK_ON_PLAY_SOUND, function()
+   if Usamune.DEAD26 then return NO_SOUND end
+end)
+hook_event(HOOK_ON_SEQ_LOAD, function()
+   if Usamune.DEAD26 then return 0 end
+end)
+hook_event(HOOK_USE_ACT_SELECT, function(levelNum)
+   if get_level_course_num(levelNum) > 0 and Usamune.DEAD26 then return false end
+end)
 
 return menu

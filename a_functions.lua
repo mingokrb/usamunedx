@@ -4,13 +4,13 @@
 
 -- render text from right to left
 function djui_hud_print_text_rtl(text, x, y, scale)
-	x = x - djui_hud_measure_text(text)
-	return djui_hud_print_text(text, x, y, scale)
+   x = x - djui_hud_measure_text(text)
+   return djui_hud_print_text(text, x, y, scale)
 end
 -- render centered text
 function djui_hud_print_text_centered(text, x, y, scale)
-	x = x - ((djui_hud_measure_text(text) * scale) / 2)
-	return djui_hud_print_text(text, x, y, scale)
+   x = x - ((djui_hud_measure_text(text) * scale) / 2)
+   return djui_hud_print_text(text, x, y, scale)
 end
 -- render text with shadow (ltr only)
 function djui_hud_print_text_shadowed(text, x, y, scale, color, distx, disty)
@@ -25,20 +25,20 @@ end
 
 -- render centered texture with/out disabling x or y centering
 function djui_hud_render_texture_centered(tex, x, y, scale, centering)
-	if not centering or centering == 'x' then
-		x = x - (tex.width * scale) / 2
-	end
-	if not centering or centering == 'y' then
-		y = y - (tex.height * scale) / 2
-	end
-	return djui_hud_render_texture(tex, x, y, scale, scale)
+   if not centering or centering == 'x' then
+      x = x - (tex.width * scale) / 2
+   end
+   if not centering or centering == 'y' then
+      y = y - (tex.height * scale) / 2
+   end
+   return djui_hud_render_texture(tex, x, y, scale, scale)
 end
 
 -- calculate position relative to screen center
 function from_screen_center(x, y)
-	x = (screen.width / 2) + (x or 0)
-	y = (screen.height / 2) + (y or 0)
-	return { x = x, y = y }
+   x = (screen.width / 2) + (x or 0)
+   y = (screen.height / 2) + (y or 0)
+   return { x = x, y = y }
 end
 
 -----------
@@ -47,32 +47,32 @@ end
 
 -- play sound as a string
 function sound_play(sound)
-	local pos = gMarioStates[0].pos
+   local pos = gMarioStates[0].pos
 
-	if sound == 'buzz' or not sound then
-		play_sound(SOUND_MENU_CAMERA_BUZZ, pos)
-	elseif sound == 'change' then
-		play_sound(SOUND_MENU_MESSAGE_NEXT_PAGE, pos)
-	elseif sound == 'switchMenu' then
-		play_sound(SOUND_MENU_CLICK_CHANGE_VIEW, pos)
-	elseif sound == 'pause' then
-		play_sound(SOUND_MENU_PAUSE_2, pos)
-	elseif sound == 'copy' then
-		play_sound(SOUND_MENU_MARIO_CASTLE_WARP, pos)
-	end
+   if sound == 'buzz' or not sound then
+      play_sound(SOUND_MENU_CAMERA_BUZZ, pos)
+   elseif sound == 'change' then
+      play_sound(SOUND_MENU_MESSAGE_NEXT_PAGE, pos)
+   elseif sound == 'switchMenu' then
+      play_sound(SOUND_MENU_CLICK_CHANGE_VIEW, pos)
+   elseif sound == 'pause' then
+      play_sound(SOUND_MENU_PAUSE_2, pos)
+   elseif sound == 'copy' then
+      play_sound(SOUND_MENU_MARIO_CASTLE_WARP, pos)
+   end
 end
 
 -- faster than having to type that entire check every single time
 function buttonPressed(button)
-	return (gMarioStates[0].controller.buttonPressed & (button or gMarioStates[0].controller.buttonPressed)) ~= 0
+   return (gMarioStates[0].controller.buttonPressed & (button or gMarioStates[0].controller.buttonPressed)) ~= 0
 end
 function buttonDown(button)
-	return (gMarioStates[0].controller.buttonDown & (button or gMarioStates[0].controller.buttonDown)) ~= 0
+   return (gMarioStates[0].controller.buttonDown & (button or gMarioStates[0].controller.buttonDown)) ~= 0
 end
 
 -- supports color indexes in order (1, 2, 3, 4) and RGBA keys in any order (r = 1, g = 2, b = 3, a = 4)
 function djui_hud_set_color_array(array, alpha)
-	djui_hud_set_color(array[1] or array.r or 255, array[2] or array.g or 255, array[3] or array.b or 255, array[4] or array.a or alpha or 255)
+   djui_hud_set_color(array[1] or array.r or 255, array[2] or array.g or 255, array[3] or array.b or 255, array[4] or array.a or alpha or 255)
 end
 function djui_hud_get_color_array()
    local color = djui_hud_get_color()
@@ -81,20 +81,18 @@ end
 
 -- replace all lowercase 'x' with '`' to use the original x character texture
 function filter_text(text)
-	return text:gsub("x", "`")
+   return text:gsub("x", "`")
 end
 
 -- return saved lerp value or 1 if lerping disabled
 function get_lerp_weight()
-	return (Config.delux.arwlerp.value > 1) and (Config.delux.arwlerp.alt * 0.1) or 1
+   return (Config.delux.arwlerp.value > 1) and (Config.delux.arwlerp.alt * 0.1) or 1
 end
 
 local button_names = Usamune.buttons
 function get_button(buttonID)
    return button_names.id[buttonID]
 end
-
-
 
 -----------
 -- DEBUG --
@@ -104,42 +102,42 @@ end
 function console_log(...)
    local str = select(1, ...) or ""
 
-	-- presets --
-	if str == "config" then
-		str = "> /g1/UsamuneConfig:/reset/"
-	elseif str == "savestate" then
-		str = "> /g1/UsamuneStates:/reset/"
-	end
-
-   if #{...} > 1 then
-	   str = str .." ".. table.concat({...}, " ", 2, #{...})
+   -- presets --
+   if str == "config" then
+      str = "> /g1/UsamuneConfig:/reset/"
+   elseif str == "savestate" then
+      str = "> /g1/UsamuneStates:/reset/"
    end
 
-	-- colors --
-	-- red
-	str = str:gsub("/r/", "\\#b34343\\")
-	-- green
-	str = str:gsub("/g/", "\\#53c253\\")
-	-- blue
-	str = str:gsub("/b/", "\\#71abca\\")
-	-- yellow
-	str = str:gsub("/y/", "\\#c8c85f\\")
+   if #{...} > 1 then
+      str = str .." ".. table.concat({...}, " ", 2, #{...})
+   end
 
-	-- orange
-	str = str:gsub("/o/", "\\#e59b7f\\")
-	-- purple
-	str = str:gsub("/purple/", "\\#c187df\\")
+   -- colors --
+   -- red
+   str = str:gsub("/r/", "\\#b34343\\")
+   -- green
+   str = str:gsub("/g/", "\\#53c253\\")
+   -- blue
+   str = str:gsub("/b/", "\\#71abca\\")
+   -- yellow
+   str = str:gsub("/y/", "\\#c8c85f\\")
 
-	-- gray 1
-	str = str:gsub("/g1/", "\\#999999\\")
-	-- gray 2
-	str = str:gsub("/g2/", "\\#acacac\\")
+   -- orange
+   str = str:gsub("/o/", "\\#e59b7f\\")
+   -- purple
+   str = str:gsub("/purple/", "\\#c187df\\")
 
-	-- reset
-	str = str:gsub("/reset/", "\\#dcdcdc\\")
+   -- gray 1
+   str = str:gsub("/g1/", "\\#999999\\")
+   -- gray 2
+   str = str:gsub("/g2/", "\\#acacac\\")
 
-	log_to_console(str)
-	return str
+   -- reset
+   str = str:gsub("/reset/", "\\#dcdcdc\\")
+
+   log_to_console(str)
+   return str
 end
 
 local function printtable(tbl, tblName, inline, deepPrint, indent)

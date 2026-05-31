@@ -42,6 +42,7 @@ Config = {
       dive = { value = 1 },
       ljsldk = { value = 1 },
       tj = { value = 1 },
+      spdkick = { value = 1 },
       load = { value = 1 },
       bowser = { value = 1 },
       coin = { value = 1 },

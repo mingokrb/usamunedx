@@ -33,22 +33,43 @@ Usatimer = {
    },
 }
 
+-- generic interactions
 local interactions = {
    -- [INTERACTION_TYPE] = interactionValue
    stop = {
       [INTERACT_WARP_DOOR] = true,
       [INTERACT_BBH_ENTRANCE] = true,
    },
-   screenshot = {
+   misc = {
       [INTERACT_WARP] = true,
       [INTERACT_HOOT] = true,
       [INTERACT_DOOR] = true,
-      [INTERACT_CAP] = true,
-      [INTERACT_POLE] = true,
-      [INTERACT_BREAKABLE] = true,
+      --[INTERACT_CAP] = '',
+      [INTERACT_POLE] = 'polegrb',
+      [INTERACT_BREAKABLE] = 'exclbox',
       [INTERACT_WATER_RING] = true,
-      [INTERACT_KOOPA_SHELL] = true,
+      [INTERACT_KOOPA_SHELL] = 'ride',
       [INTERACT_TEXT] = true,
+   }
+}
+-- generic actions
+local actions = {
+   -- [ACT] = 'key'
+   stop = {
+      [INTERACT_BBH_ENTRANCE] = true,
+   },
+   misc = {
+      [ACT_LEDGE_GRAB] = 'ldgegrb',
+      [ACT_WALL_KICK_AIR] = 'wk',
+      [ACT_AIR_HIT_WALL] = 'wallhit',
+      [ACT_SIDE_FLIP] = 'flip',
+      [ACT_BACKFLIP] = 'flip',
+      [ACT_FORWARD_ROLLOUT] = 'rollout',
+      [ACT_BACKWARD_ROLLOUT] = 'rollout',
+      [ACT_DIVE] = 'dive',
+      [ACT_LONG_JUMP] = 'ljsldk',
+      [ACT_SLIDE_KICK] = 'ljsldk',
+      [ACT_TRIPLE_JUMP] = 'tj',
    }
 }
 
@@ -100,12 +121,12 @@ local function render_timers()
 end
 
 local function on_hud_render_behind()
-   if Usatimer.render_layer == "behind" then
+   if not hud_is_hidden() and Usatimer.render_layer == "behind" then
       render_timers()
    end
 end
 local function on_hud_render()
-   if Usatimer.render_layer == "front" then
+   if not hud_is_hidden() and Usatimer.render_layer == "front" then
       render_timers()
    end
 end
@@ -188,9 +209,6 @@ hook_event(HOOK_ON_WARP, on_warp)
 -- timer functions --
 function Usatimer.stop(hideTimer)
    Usatimer.is_running = false
-
-   if hideTimer then
-   end
 end
 function Usatimer.screenshot(hideTimer)
    Usatimer.misctmr.time = {
@@ -199,9 +217,6 @@ function Usatimer.screenshot(hideTimer)
       ms = Usatimer.time.ms,
    }
    Usatimer.misctmr.remaining = Usatimer.misctmr.max_lifespan
-
-   if hideTimer then
-   end
 end
 
 
@@ -225,7 +240,7 @@ local function on_interact(m, obj, intType, val)
       end
    end
    -- screenshot timer
-   for i, value in pairs(interactions.screenshot) do
+   for i, value in pairs(interactions.misc) do
       if i == intType and value == val then
          Usatimer.screenshot()
       end
@@ -233,17 +248,29 @@ local function on_interact(m, obj, intType, val)
 end
 hook_event(HOOK_ON_INTERACT, on_interact)
 
+local function before_set_mario_action(m, act)
+   if m.playerIndex ~= 0 then return end
 
--- basically serves as a HOOK_ON_ACT_SELECT
+   -- speedkick
+   if act == ACT_JUMP_KICK and (m.action ~= ACT_JUMP and m.action ~= ACT_DOUBLE_JUMP and m.action ~= ACT_TRIPLE_JUMP)
+   and m.forwardVel > 30 then
+      Usatimer.screenshot()
+   end
+
+   -- screenshot timer
+   for i, key in pairs(actions.misc) do
+      if i == act and Config.misct[key].value > 1 then
+         Usatimer.screenshot()
+      end
+   end
+end
+hook_event(HOOK_BEFORE_SET_MARIO_ACTION, before_set_mario_action)
+
+
+-- basically acts as a HOOK_ON_ACT_SELECT
 local function on_obj_load(obj)
    if get_id_from_behavior(obj.behavior) == id_bhvActSelector then
       in_act_select = true
    end
 end
 hook_event(HOOK_ON_OBJECT_LOAD, on_obj_load)
-
-
-local function on_set_camera_mode(mode)
-   printc(mode)
-end
-hook_event(HOOK_ON_CHANGE_CAMERA_ANGLE, on_set_camera_mode)

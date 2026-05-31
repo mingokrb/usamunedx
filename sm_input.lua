@@ -45,7 +45,7 @@ local input = {
 }
 
 local function hud_render_behind()
-   if Usamune.in_menu then return end
+   if Usamune.in_menu or hud_is_hidden() then return end
 
    djui_hud_set_resolution(RESOLUTION_N64)
    djui_hud_set_font(FONT_HUD)
@@ -71,7 +71,6 @@ local function hud_render_behind()
       end
 
       local shrink_axis_max = (Config.input.stkaxis.value / 2)
-
       djui_hud_print_text(string.format('%s%d', direction.y, math.floor(math.abs(c.rawStickY) * shrink_axis_max)), stick.base_pos.x - 4, screen.height - 50, 1)
       djui_hud_print_text(string.format('%s%d', direction.x, math.floor(math.abs(c.rawStickX) * shrink_axis_max)), stick.base_pos.x - 4, screen.height - 30, 1)
    end
@@ -133,5 +132,4 @@ local function hud_render_behind()
       end
    end
 end
-
 hook_event(HOOK_ON_HUD_RENDER_BEHIND, hud_render_behind)

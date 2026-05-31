@@ -114,6 +114,9 @@ local function update_menu()
          { name = "tj",      values = {"off", "on"}, description =
             "When you perform a triple-jump",
             enable_if = (Config.misct.misctmr.value > 1) },
+         { name = "spdkick", values = {"off", "on"}, description =
+            "When you perform a speed-kick",
+            enable_if = (Config.misct.misctmr.value > 1) },
          { name = "load",    values = {"off", "on"}, description =
             "When a new area loads",
             enable_if = (Config.misct.misctmr.value > 1) },

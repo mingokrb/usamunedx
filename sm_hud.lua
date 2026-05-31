@@ -60,7 +60,7 @@ end
 hook_event(HOOK_MARIO_UPDATE, mario_update)
 
 local function hud_render_behind()
-   if Usamune.in_menu then return end
+   if Usamune.in_menu or hud_is_hidden() then return end
    djui_hud_set_resolution(RESOLUTION_N64)
    djui_hud_set_font(FONT_HUD)
 

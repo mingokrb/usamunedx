@@ -16,5 +16,9 @@ local function on_warp(_, __, ___, nodeId)
       Usamune.hud_display_flags = hud_get_value(HUD_DISPLAY_FLAGS)
    end
    Usamune.level_is_restarting = false
+
+
+
+   if Usamune.DEAD26 then hud_hide() end
 end
 hook_event(HOOK_ON_WARP, on_warp)

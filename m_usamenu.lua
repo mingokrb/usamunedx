@@ -54,7 +54,7 @@ local function update_messages()
       "Whats up?",
       "I like Chopin",
       "Play time ".. math.floor((get_global_timer() % 30) / 60) .."min",
-      "v".. _G.USAMUNE_VERSION:gsub(".", ""),
+      "v".. _G.USAMUNE_VERSION:replace('%.', ''),
 
       -- custom
       "yo waddup",
@@ -109,13 +109,17 @@ function Usamune.toggle_menu(toggle)
 
       camera_unfreeze()
       disable_time_stop_including_mario()
-      hud_show()
+      if not Usamune.DEAD26 then
+         hud_show()
+      end
    end
 
    on_menu_toggled(toggle)
 end
 
 function Usamune.soft_reset()
+   warp_to_start_level()
+   Usamune.toggle_menu(false)
    console_log("Usamenu", "Executed soft reset")
 end
 
@@ -236,11 +240,8 @@ local function update()
          if sr.elapsed < sr.max then
             sr.elapsed = sr.elapsed + 1
             if sr.elapsed == sr.max then
-               if warp_to_start_level() then
-                  Usamune.soft_reset()
-               else
-                  Usamenu.bottom_message({"SOFT RESET FAILED"})
-               end
+               Usamune.soft_reset()
+               --Usamenu.bottom_message({"SOFT RESET FAILED"})
             end
          end
       else
