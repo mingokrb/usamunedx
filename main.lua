@@ -13,6 +13,7 @@ local function on_warp(_, __, ___, nodeId)
    if not Usamune.level_is_restarting then
       Usamune.last_health = gMarioStates[0].health
       Usamune.hud.attempts = 0
+      Usamune.hud_display_flags = hud_get_value(HUD_DISPLAY_FLAGS)
    end
    Usamune.level_is_restarting = false
 end

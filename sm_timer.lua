@@ -1,6 +1,8 @@
 local djui_hud_set_resolution,djui_hud_set_font,djui_hud_set_color,djui_hud_print_text_rtl,is_game_paused,get_id_from_behavior = djui_hud_set_resolution,djui_hud_set_font,djui_hud_set_color,djui_hud_print_text_rtl,is_game_paused,get_id_from_behavior
 
 local in_act_select = false
+local racetmr_is_onscreen = false
+local racetmr_stopped = true
 
 local function int(bool)
    return bool and 1 or 0
@@ -20,7 +22,7 @@ Usatimer = {
    is_paused = false, -- paused by opening the menu
    is_running = true,
    is_hidden = true,
-   shot = {
+   misctmr = {
       time = {
          mins = 0,
          secs = 0,
@@ -66,7 +68,7 @@ local function render_timers()
    djui_hud_set_font(FONT_CUSTOM_HUD)
 
    Usatimer.is_hidden = in_act_select or (Config.timer.display.value ~= 4)
-   Usatimer.is_hidden = Usatimer.is_hidden or (Config.timer.pssrace.value == 2 and Usatimer.racetmr_screentime > 0)
+   Usatimer.is_hidden = Usatimer.is_hidden or (Config.timer.pssrace.value == 1 and racetmr_is_onscreen)
 
    local right_stack = 0
    if not Usamune.in_menu then
@@ -75,7 +77,7 @@ local function render_timers()
          + int(not Usatimer.is_hidden)
 
       -- race/slide timer on screen
-      if Config.timer.pssrace.value == 5 then
+      if Config.timer.pssrace.value > 1 then
          right_stack = right_stack + min(hud_get_value(HUD_DISPLAY_FLAGS) & HUD_DISPLAY_FLAGS_TIMER, 1)
       end
    end
@@ -90,8 +92,8 @@ local function render_timers()
       djui_hud_print_text_rtl(timerstr, timer_pos.x, timer_y, 1)
    end
    -- screenshot timer
-   if Usatimer.shot.remaining > 0 then
-      local t = Usatimer.shot.time
+   if Usatimer.misctmr.remaining > 0 then
+      local t = Usatimer.misctmr.time
       local timerstr = string.format("%d'%02d\"%02d", t.mins, t.secs, t.ms)
       djui_hud_print_text_rtl(timerstr, timer_pos.x, timer_y + timer_pos.separation, 1)
    end
@@ -120,27 +122,48 @@ local function update()
    Usatimer.time.mins = math.floor(subtimer / (30 * 60))
 
    -- update screenshot
-   if Usatimer.shot.remaining > 0 then
-      Usatimer.shot.remaining = Usatimer.shot.remaining - 1
+   if Usatimer.misctmr.remaining > 0 then
+      Usatimer.misctmr.remaining = Usatimer.misctmr.remaining - 1
    end
 
+   -- [PSSRACE]
+   local hud_display_flags = hud_get_value(HUD_DISPLAY_FLAGS)
+   racetmr_is_onscreen = hud_display_flags & HUD_DISPLAY_FLAGS_TIMER ~= 0
 
-   -- PSSRACE
-   if Config.timer.pssrace.value == 1 then
-      Usatimer.racetmr_screentime = 0
+   if Config.timer.pssrace.value > 1 then
+      hud_set_value(HUD_DISPLAY_FLAGS, hud_display_flags & ~HUD_DISPLAY_FLAGS_TIMER)
+      -- [RACE]
+      if Config.timer.pssrace.value == 2 then
+         if level_control_timer_running() > 0 then
+            Usatimer.racetmr_screentime = 30
+         end
 
-   elseif Config.timer.pssrace.value == 2 or Config.timer.pssrace.value == 4 then
-      if level_control_timer_running() > 0 then
-         Usatimer.racetmr_screentime = 30
+         if Usatimer.racetmr_screentime > 0 then
+            local race_subtimer = hud_get_value(HUD_DISPLAY_TIMER)
+            Usatimer.time.ms = math.floor((race_subtimer / 30) * 100) % 100
+            Usatimer.time.secs = math.floor(race_subtimer / 30) % 60
+            Usatimer.time.mins = math.floor(race_subtimer / (30 * 60))
+
+            Usatimer.racetmr_screentime = Usatimer.racetmr_screentime - 1
+         end
+      -- [END]
+      elseif Config.timer.pssrace.value == 4 then
+         if level_control_timer_running() > 0 then
+            racetmr_stopped = false
+         elseif not racetmr_stopped then
+            Usatimer.racetmr_screentime = 30
+            racetmr_stopped = true
+         end
+
+         if Usatimer.racetmr_screentime > 0 then
+            local race_subtimer = hud_get_value(HUD_DISPLAY_TIMER)
+            Usatimer.time.ms = math.floor((race_subtimer / 30) * 100) % 100
+            Usatimer.time.secs = math.floor(race_subtimer / 30) % 60
+            Usatimer.time.mins = math.floor(race_subtimer / (30 * 60))
+
+            Usatimer.racetmr_screentime = Usatimer.racetmr_screentime - 1
+         end
       end
-   
-      if Usatimer.racetmr_screentime > 0 then
-         Usatimer.racetmr_screentime = Usatimer.racetmr_screentime - 1
-      end
-   end
-
-   if Usatimer.racetmr_screentime <= 0 then
-      hud_set_value(HUD_DISPLAY_FLAGS, hud_get_value(HUD_DISPLAY_FLAGS) & ~HUD_DISPLAY_FLAGS_TIMER)
    end
 end
 hook_event(HOOK_UPDATE, update)
@@ -155,7 +178,9 @@ local function on_warp()
       subtimer = 0
    end
    Usatimer.is_running = true
-   Usatimer.shot.remaining = 0
+   Usatimer.misctmr.remaining = 0
+   Usatimer.racetmr_screentime = 0
+   racetmr_stopped = true
    in_act_select = false
 end
 hook_event(HOOK_ON_WARP, on_warp)
@@ -168,12 +193,12 @@ function Usatimer.stop(hideTimer)
    end
 end
 function Usatimer.screenshot(hideTimer)
-   Usatimer.shot.time = {
+   Usatimer.misctmr.time = {
       mins = Usatimer.time.mins,
       secs = Usatimer.time.secs,
       ms = Usatimer.time.ms,
    }
-   Usatimer.shot.remaining = Usatimer.shot.max_lifespan
+   Usatimer.misctmr.remaining = Usatimer.misctmr.max_lifespan
 
    if hideTimer then
    end
@@ -215,5 +240,10 @@ local function on_obj_load(obj)
       in_act_select = true
    end
 end
-
 hook_event(HOOK_ON_OBJECT_LOAD, on_obj_load)
+
+
+local function on_set_camera_mode(mode)
+   printc(mode)
+end
+hook_event(HOOK_ON_CHANGE_CAMERA_ANGLE, on_set_camera_mode)

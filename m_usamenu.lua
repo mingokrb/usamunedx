@@ -182,20 +182,22 @@ end
 function on_menu_toggled(toggle)
 end
 
+local button_names = Usamune.buttons
 local function toggle_as_button(toggle)
-   if toggle == nil or type(toggle) ~= 'boolean' then
+   if type(toggle) ~= 'boolean' then
       toggle = not Usamenu.in_menu
    end
    Usamune.toggle_menu(toggle)
    on_menu_switched(Usamenu.selected_menu, Usamenu.selected_menu)
    on_menu_toggled(toggle)
    sound_play('pause')
-   Usamenu.opening_button_pressed = true
+   if Config.delux.menubtn.value <= #button_names.indexed then
+      Usamenu.opening_button_pressed = true
+   end
 
    return true
 end
 
-local button_names = Usamune.buttons
 local hold_times = {
    soft_reset = {
       max = 15,
@@ -221,7 +223,7 @@ local function update()
    -- menu is closed
    if not Usamune.in_menu then
       -- open menu
-      if Config.delux.menubtn.value ~= #button_names.indexed + 1
+      if Config.delux.menubtn.value <= #button_names.indexed
       and buttonPressed(button_names.indexed[Config.delux.menubtn.value].id) then
          toggle_as_button(true)
       end
