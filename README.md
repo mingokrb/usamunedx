@@ -32,7 +32,6 @@ There's definitely more stuff to add here but this is what I remember
 * **menus.levels**: Warp to the level's act select instead of defaulting to act 1 (couldn't figure this out but hopefully possible)
 * **menus.levels**: Test levels with custom scripts (aka Decomp Levels (i dont even know what people call these))
 * **general**: Rewrite old code
-<br>
 <!--\------------------------------------------------------------------------>
 ### GitHub Repository
 * **repo**: Finish this README
