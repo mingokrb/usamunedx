@@ -54,7 +54,7 @@ local function update_messages()
       "Whats up?",
       "I like Chopin",
       "Play time ".. math.floor((get_global_timer() % 30) / 60) .."min",
-      "v".. _G.USAMUNE_VERSION:replace('%.', ''),
+      "v".. _G.USAMUNE_VERSION,
 
       -- custom
       "yo waddup",
@@ -92,7 +92,7 @@ function Usamune.toggle_menu(toggle)
    if toggle then
       -- on
       Usamenu.opacity = 5
-      
+
       -- chance of showing random message
       if not current_selection_has_alt_values and math.random(5) == 1 then
          Usamenu.bottom_message()
@@ -207,16 +207,10 @@ local hold_times = {
       max = 15,
       elapsed = 0,
    },
-   category_reset = {
-      max = 20,
-      elapsed = 0,
-   },
 }
 
 local function update()
    if is_game_paused() then
-      -- no idea of a better way to do this without HOOK_BEFORE_MARIO_UPDATE
-      if Usamune.in_menu then game_unpause() end
       return
    end
 
@@ -297,4 +291,14 @@ function Usamenu.move_selection(currSelection, min, max, steps, sound)
    return selection
 end
 
+-- prevent pause on usamenu
+hook_event(HOOK_BEFORE_PLAY_MODE_UPDATE, function(mode)
+   if Usamune.in_menu and gMarioStates[0].controller.buttonPressed & START_BUTTON ~= 0 then
+      gMarioStates[0].controller.buttonPressed = gMarioStates[0].controller.buttonPressed &~ START_BUTTON
+   end
+   -- fix pausing and opening usamenu at the same time
+   if Usamune.in_menu and is_game_paused() then game_unpause() end
+end)
+
+-- menu chat command
 hook_chat_command("usamenu", "- Toggle the Usamune menu on/off", toggle_as_button)

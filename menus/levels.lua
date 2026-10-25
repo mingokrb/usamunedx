@@ -98,8 +98,8 @@ local custom_entry = { name = "CUSTOM", id = 0, area = 0, node = 0, is_custom = 
 
 -- for arrow lerp
 local arrow_pos = {
-   { x = 0, y = 0 },
-   { x = 0, y = 0 },
+   { x = 0, y = 0 }, -- level selection
+   { x = 0, y = 0 }, -- custom level entries
 }
 local get_lerp_weight = get_lerp_weight
 local function arrowlerp(x, y, i)
@@ -143,7 +143,7 @@ local menu = {
 
 function menu.update_once()
    local g = gNetworkPlayers[0]
-   menu.title = string.format("cur %02x %02x %02x", g.currLevelNum, g.currAreaIndex, Usamune.last_warpnode_id)
+   menu.title = string.format("cur %02x %02x %02x", g.currLevelNum, g.currAreaIndex, Usamune.restart_info.last_warpnode_id)
    --menu.levels.arr = update_levels()
 end
 
@@ -225,8 +225,10 @@ function menu.render()
                -- left - right
                if input == L_CBUTTONS then
                   menu.levels.custom_selected_char = menu.levels.custom_selected_char % 6 + 1
+                  sound_play('change')
                elseif input == R_CBUTTONS then
                   menu.levels.custom_selected_char = (menu.levels.custom_selected_char - 2) % 6 + 1
+                  sound_play('change')
                -- up - down
                elseif input == U_CBUTTONS then
                   indexed_level_info[selected_info] = Usamenu.move_selection(indexed_level_info[selected_info], 0, 256, steps)
@@ -261,16 +263,22 @@ function menu.render()
                   end
             else
                menu.levels.selected = true
-               local warped = warp_to_warpnode(selected_level.id, selected_level.area or 1, 1, selected_level.node or 10)
+               local warped
+               --[[if get_level_course_num(selected_level.id) ~= 0 then
+                  lvl_set_current_level(0, selected_level.id)
+                  initiate_warp(selected_level.id, selected_level.area or 1, selected_level.node or 10, 0)
+                  warped = true
+                  --spawn_non_sync_object(id_bhvActSelector, E_MODEL_NONE, 0,0,0, nil)
+               else]]
+               warped = warp_to_warpnode(selected_level.id, selected_level.area or 1, 1, selected_level.node or 10)
+               --end
                --local warped = warp_to_level(selected_level.id, selected_level.area or 1, 1)
-   
+
                -- warp failed
                if not warped and menu.levels.selected then
                   Usamenu.bottom_message({'INVALID DESTINATION'}, messages_durations.INVALID_DESTINATION)
                   sound_play('buzz')
                end
-   
-               menu.levels.selected = false
             end
          end
 
@@ -321,21 +329,13 @@ function menu.render()
             end
          elseif input == R_JPAD then
             while menu.levels.selection == prevSelection or (levels[menu.levels.selection] and levels[menu.levels.selection].name == '') do
-            menu.levels.selection = Usamenu.move_selection(menu.levels.selection, 1, #levels, 1, '')
+               menu.levels.selection = Usamenu.move_selection(menu.levels.selection, 1, #levels, 1, '')
             end
          -- up - down
          elseif input == U_JPAD then
-            menu.levels.selection = Usamenu.move_selection(menu.levels.selection, 1, #levels + 2, -menu.levels.levels_per_line, '')
+            menu.levels.selection = Usamenu.move_selection(menu.levels.selection, 1, #levels + (menu.levels.levels_per_line-1), -menu.levels.levels_per_line, '')
          elseif input == D_JPAD then
-            if levels[menu.levels.selection + menu.levels.levels_per_line] and levels[menu.levels.selection + menu.levels.levels_per_line].name == '' then
-               while menu.levels.selection == prevSelection or (levels[menu.levels.selection + 1] and levels[menu.levels.selection + 1].name ~= '') do
-                  menu.levels.selection = Usamenu.move_selection(menu.levels.selection, 1, #levels + 2, 1, '')
-               end
-            else
-               while menu.levels.selection == prevSelection or (levels[menu.levels.selection] and levels[menu.levels.selection].name == '') do
-                  menu.levels.selection = Usamenu.move_selection(menu.levels.selection, 1, #levels + 2, menu.levels.levels_per_line, '')
-               end
-            end
+            menu.levels.selection = Usamenu.move_selection(menu.levels.selection, 1, #levels + (menu.levels.levels_per_line-1), menu.levels.levels_per_line, '')
          end
 
          menu.levels.selection = math.clamp(menu.levels.selection, 1, #levels)
@@ -356,7 +356,25 @@ hook_event(HOOK_ON_SEQ_LOAD, function()
    if Usamune.DEAD26 then return 0 end
 end)
 hook_event(HOOK_USE_ACT_SELECT, function(levelNum)
-   if get_level_course_num(levelNum) > 0 and Usamune.DEAD26 then return false end
+   if Usamune.DEAD26 then return false end
+   --return get_level_course_num(levelNum) ~= 0
+end)
+
+hook_event(HOOK_BEFORE_WARP, function(levelNum)
+   --printc(levelNum)
+end)
+
+hook_event(HOOK_ON_WARP, function(levelNum)
+   --if menu.levels.selected then menu.levels.selected = false
+   --   local act_select = spawn_non_sync_object(id_bhvActSelector, E_MODEL_NONE, 0,0,0, nil)
+   --   printc(act_select)
+   --end
+end)
+
+hook_event(HOOK_ON_OBJECT_LOAD, function(obj)
+   --if obj_has_behavior_id(obj, id_bhvActSelector) ~= 0 then
+   --   obj_mark_for_deletion(obj)
+   --end
 end)
 
 return menu

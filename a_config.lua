@@ -19,7 +19,7 @@ Config = {
       tmrposi = { value = 1 },
    },
    misct = {
-      misctmr = { value = 1 },
+      misctmr = { value = 1, alt = 30 },
       numdisp = { value = 1 },
       xcam = { value = 1 },
       bswitch = { value = 1 },
@@ -62,7 +62,7 @@ Config = {
       life = { value = 1 },
       star = { value = 1 },
       dust = { value = 1 },
-      wkdisp = { value = 1 },
+      wkdisp = { value = 1, alt = 1 },
       attempt = { value = 1 },
       bpsdisp = { value = 1 },
    },
@@ -79,44 +79,51 @@ Config = {
       music = { value = 1 },
    },
    delux = {
-      menubtn = { value = 12 }, -- D_JPAD as default
+      menubtn = { value = 12 }, -- D_JPAD
       hints = { value = 1 },
       arwlerp = { value = 1, alt = 7 },
       framep = { value = 1, alt = 1 },
    },
 }
-
--- return config value from mod storage
-local function load_config(key)
-   local value = mod_storage_load_number(key)
-   return value
-end
+ConfigDefaults = table.deepcopy(Config)
 
 -- refresh Config table
 function refresh_config()
-   for k, menu in pairs(Config) do
-      for i, option in pairs(menu) do
-         local save = load_config(string.format(config_key_pattern, k, i, 'value'))
-         -- Config.submenu.option
-         option.value = (save < 1) and option.value or save
-         if option.alt then
-            save = load_config(string.format(config_key_pattern, k, i, 'alt'))
-            option.alt = (save < 1) and option.alt or save
+   for ctg, menu in pairs(Config) do
+      for opt, option in pairs(menu) do
+         local str = string.format(config_key_pattern, ctg, opt, '')
+         -- load values
+         for i, value in pairs(option) do
+            option[i] = mod_storage_load_integer(str .. i, value)
          end
       end
    end
 end
-
 refresh_config()
 
 -- save to mod storage
 function save_config(submenu, option, value, isAlt)
    local str = string.format(config_key_pattern, submenu, option, (isAlt and 'alt' or 'value'))
-   mod_storage_save_number(str, value)
-   --Config[submenu][option][isAlt and 'alt' or 'value'] = value
+   mod_storage_save_integer(str, value)
+
    refresh_config()
-   console_log("config", "Saved key /g2/".. str .."/reset/ as /y/".. math.floor(mod_storage_load_number(str)))
+   console_log("config", "Saved key /g2/".. str .."/reset/ as /y/".. value)
    return str
+end
+
+-- reset config category
+function reset_category(category)
+   if not category then return end
+   Config[category] = table.deepcopy(ConfigDefaults[category])
+
+   for opt, option in pairs(Config[category]) do
+      local str = string.format(config_key_pattern, category, option, '')
+      for i, value in pairs(option) do
+         mod_storage_save_integer(str .. i, value)
+         printc(str .. i, value)
+      end
+   end
+   console_log("config", "Reset all keys in /g2/Config.".. category .."/reset/ to default")
 end
 
 -- final mod storage strings:

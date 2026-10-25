@@ -8,10 +8,13 @@ Usamune = {
    -- if usamune menu enabled
    in_menu = false,
    -- for warps/resets
-   level_is_restarting = false,
-   last_warpnode_id = 0,
-   last_health = gMarioStates[0].health,
-   hud_display_flags = hud_get_value(HUD_DISPLAY_FLAGS),
+   restart_info = {
+      level_is_restarting = false,
+      last_warpnode_id = 0,
+      last_health = gMarioStates[0].health,
+      hud_display_flags = hud_get_value(HUD_DISPLAY_FLAGS),
+      warp_interact_timer = 0,
+   },
 
    buttons = {
       indexed = {

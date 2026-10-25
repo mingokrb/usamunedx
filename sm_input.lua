@@ -1,4 +1,4 @@
-local djui_hud_set_resolution,djui_hud_set_font,djui_hud_print_text_rtl = djui_hud_set_resolution,djui_hud_set_font,djui_hud_print_text_rtl
+local djui_hud_is_pause_menu_created,djui_hud_set_resolution,djui_hud_set_font,djui_hud_print_text_rtl = djui_hud_is_pause_menu_created,djui_hud_set_resolution,djui_hud_set_font,djui_hud_print_text_rtl
 
 -- textures
 local tex_sticks = get_texture_info('sticks')
@@ -45,7 +45,8 @@ local input = {
 }
 
 local function hud_render_behind()
-   if Usamune.in_menu or hud_is_hidden() then return end
+   if Usamune.in_menu
+   or hud_is_hidden() then return end
 
    djui_hud_set_resolution(RESOLUTION_N64)
    djui_hud_set_font(FONT_HUD)
@@ -70,6 +71,7 @@ local function hud_render_behind()
          direction.x = "L"
       end
 
+      -- print stick coords
       local shrink_axis_max = (Config.input.stkaxis.value / 2)
       djui_hud_print_text(string.format('%s%d', direction.y, math.floor(math.abs(c.rawStickY) * shrink_axis_max)), stick.base_pos.x - 4, screen.height - 50, 1)
       djui_hud_print_text(string.format('%s%d', direction.x, math.floor(math.abs(c.rawStickX) * shrink_axis_max)), stick.base_pos.x - 4, screen.height - 30, 1)
@@ -100,7 +102,8 @@ local function hud_render_behind()
    input.y = screen.height - 24
 
    -- if buttons enabled
-   if Config.input.buttons.value == 1 then return end
+   if Config.input.buttons.value == 1
+   or djui_hud_is_pause_menu_created() then return end
 
    local large_buttons = (Config.input.buttons.value == 3 or Config.input.buttons.value == 5)
    local cdeluxe = (Config.input.buttons.alt == 2)

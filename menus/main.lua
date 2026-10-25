@@ -43,92 +43,93 @@ local function update_menu()
       },
       misct = {
          { name = "misctmr",  values = {"off", "on"}, description =
-            "Highlights the current time when an event is triggered\nToggle events in the following options" },
+            "Highlights the current time when an event is triggered\nToggle events in the following options",
+            input = { text = "FRAMES %02d",    length = 2, min = 1, max = 90 } },
 
          { name = "numdisp",  values = {"off", "on"}, description =
             "When you collect a red coin or find a secret",
-            enable_if = (Config.misct.misctmr.value > 1) },
+            enableIf = (Config.misct.misctmr.value > 1) },
          { name = "xcam",     values = {"off", "on"}, description =
             "When the camera icon turns \\#dd1010\\X",
-            enable_if = (Config.misct.misctmr.value > 1) },
+            enableIf = (Config.misct.misctmr.value > 1) },
          --{ name = "cswitch",  values = {"off", "on"}, description =
          --   "When you press a \\#cc4040\\cap \\#2070cc\\swi\\#40cc40\\tch",
-         --   enable_if = (Config.misct.misctmr.value > 1) },
+         --   enableIf = (Config.misct.misctmr.value > 1) },
          { name = "bswitch", values = {"off", "on"}, description =
             "When you press a \\#9090ee\\blue switch",
-            enable_if = (Config.misct.misctmr.value > 1) },
+            enableIf = (Config.misct.misctmr.value > 1) },
          { name = "pswitch", values = {"off", "on"}, description =
             "When you press a \\#aa70cc\\purple switch",
-            enable_if = (Config.misct.misctmr.value > 1) },
+            enableIf = (Config.misct.misctmr.value > 1) },
          { name = "ride",    values = {"off", "on"}, description =
             "When you start riding a Koopa shell",
-            enable_if = (Config.misct.misctmr.value > 1) },
+            enableIf = (Config.misct.misctmr.value > 1) },
          { name = "chest",   values = {"off", "on"}, description =
             "When you open a chest",
-            enable_if = (Config.misct.misctmr.value > 1) },
+            enableIf = (Config.misct.misctmr.value > 1) },
          { name = "crystal", values = {"off", "on"}, description =
             "When you touch a crystal in WDW",
-            enable_if = (Config.misct.misctmr.value > 1) },
+            enableIf = (Config.misct.misctmr.value > 1) },
          { name = "enemy",   values = {"off", "on"}, description =
             "When you interact with an enemy",
-            enable_if = (Config.misct.misctmr.value > 1) },
+            enableIf = (Config.misct.misctmr.value > 1) },
          { name = "exclbox", values = {"off", "on"}, description =
             "When you break an [!] box",
-            enable_if = (Config.misct.misctmr.value > 1) },
+            enableIf = (Config.misct.misctmr.value > 1) },
          { name = "corkbox", values = {"off", "on"}, description =
             "When you grab a cork box",
-            enable_if = (Config.misct.misctmr.value > 1) },
+            enableIf = (Config.misct.misctmr.value > 1) },
          { name = "objgrab", values = {"off", "on"}, description =
             "When you grab an object",
-            enable_if = (Config.misct.misctmr.value > 1) },
+            enableIf = (Config.misct.misctmr.value > 1) },
          { name = "ldgegrb", values = {"off", "on"}, description =
             "When you perform a ledge-grab",
-            enable_if = (Config.misct.misctmr.value > 1) },
+            enableIf = (Config.misct.misctmr.value > 1) },
          { name = "polegrb", values = {"off", "on"}, description =
             "When you perform a pole-grab",
-            enable_if = (Config.misct.misctmr.value > 1) },
+            enableIf = (Config.misct.misctmr.value > 1) },
          { name = "wk",      values = {"off", "on"}, description =
             "When you perform a wall-kick",
-            enable_if = (Config.misct.misctmr.value > 1) },
+            enableIf = (Config.misct.misctmr.value > 1) },
          { name = "wallhit", values = {"off", "on"}, description =
             "When you hit a wall",
-            enable_if = (Config.misct.misctmr.value > 1) },
+            enableIf = (Config.misct.misctmr.value > 1) },
          { name = "clip",    values = {"off", "on"}, description =
             "When you clip off an object",
-            enable_if = (Config.misct.misctmr.value > 1) },
+            enableIf = (Config.misct.misctmr.value > 1) },
          { name = "surface", values = {"off", "on"}, description =
             "When you touch lava or water",
-            enable_if = (Config.misct.misctmr.value > 1) },
+            enableIf = (Config.misct.misctmr.value > 1) },
          { name = "flip",    values = {"off", "on"}, description =
             "When you perform a side-flip or a back-flip",
-            enable_if = (Config.misct.misctmr.value > 1) },
+            enableIf = (Config.misct.misctmr.value > 1) },
          { name = "rollout", values = {"off", "on"}, description =
             "When you perform a roll-out",
-            enable_if = (Config.misct.misctmr.value > 1) },
+            enableIf = (Config.misct.misctmr.value > 1) },
          { name = "dive",    values = {"off", "on"}, description =
             "When you perform a dive",
-            enable_if = (Config.misct.misctmr.value > 1) },
+            enableIf = (Config.misct.misctmr.value > 1) },
          { name = "ljsldk",  values = {"off", "on"}, description =
             "When you perform a long-jump or a slide-kick",
-            enable_if = (Config.misct.misctmr.value > 1) },
+            enableIf = (Config.misct.misctmr.value > 1) },
          { name = "tj",      values = {"off", "on"}, description =
             "When you perform a triple-jump",
-            enable_if = (Config.misct.misctmr.value > 1) },
+            enableIf = (Config.misct.misctmr.value > 1) },
          { name = "spdkick", values = {"off", "on"}, description =
             "When you perform a speed-kick",
-            enable_if = (Config.misct.misctmr.value > 1) },
+            enableIf = (Config.misct.misctmr.value > 1) },
          { name = "load",    values = {"off", "on"}, description =
             "When a new area loads",
-            enable_if = (Config.misct.misctmr.value > 1) },
+            enableIf = (Config.misct.misctmr.value > 1) },
          { name = "bowser",  values = {"off", "on"}, description =
             "When you interact with Bowser",
-            enable_if = (Config.misct.misctmr.value > 1) },
+            enableIf = (Config.misct.misctmr.value > 1) },
          { name = "coin",    values = {"off", "on"}, description =
             "When you collect a coin",
-            enable_if = (Config.misct.misctmr.value > 1) },
+            enableIf = (Config.misct.misctmr.value > 1) },
          { name = "oneup",     values = {"off", "on"}, description =
             "When you collect a 1-Up Mushroom",
-            enable_if = (Config.misct.misctmr.value > 1) },
+            enableIf = (Config.misct.misctmr.value > 1) },
       },
       reset = {
          { name = "lbutton",  values = {"none", "lreset", "sslect"}, description =
@@ -144,7 +145,7 @@ local function update_menu()
             input = { text = "$x%03d",       length = 3, min = 0, max = 999 } },
          { name = "defmiss",  values = {"off", "on"}, description =
             "Always start levels on the specified act number",
-            input = { text = "mission %d",   length = 1, min = 1, max = 6 } },
+            input = { text = "MISSION %d",   length = 1, min = 1, max = 6 } },
       },
       hud = {
          { name = "life",     values = {"normal", "igmenu", "fspeed", "vspeed", "vellen"}, description =
@@ -154,7 +155,8 @@ local function update_menu()
          { name = "dust",     values = {"off", "on"}, description =
             "Shows a counter that increases when you miss a 1st frame roll-out" },
          { name = "wkdisp",   values = {"off", "on"}, description =
-            "Shows the wall kick frame on screen for a second when you wall kick" },
+            "Shows the wall kick frame on screen for a second when you wall kick",
+            alt = { values = {"nocombo", "comb1st"} } },
          { name = "attempt",  values = {"off", "on", "alert", "grab"}, description =
             "Shows the number of attempts on the current level (increases on level reset)" },
          { name = "bpsdisp",  values = {"off", "on"}, description =
@@ -166,10 +168,10 @@ local function update_menu()
             alt = { values = {"small", "large"} } },
          { name = "stkbase",  values = {"square", "circle"}, description =
             "Stick base appearance (mildly affects stick axis display)",
-            enable_if = (Config.input.stick.value > 2) },
+            enableIf = (Config.input.stick.value > 2) },
          { name = "stkaxis",  values = {"usamun", "cdelux"}, description =
             "Raw stick axis (max ~127) or Usamune-accurate axis (max ~64)",
-            enable_if = (Config.input.stick.value == 2 or Config.input.stick.value == 4) },
+            enableIf = (Config.input.stick.value == 2 or Config.input.stick.value == 4) },
          { name = "buttons",  values = {"off", "asmall", "alarge", "bsmall", "blarge"}, description =
             "Displays your button inputs",
             alt = { values = {"usamune", "cdeluxe"} } },
@@ -216,8 +218,8 @@ local function update_menu()
             option.input.value = cfg.alt
          end
 
-         -- option always enabled if 'enable_if' is null
-         option.enable_if = (option.enable_if == nil) or option.enable_if
+         -- option always enabled if 'enableIf' is null
+         option.enableIf = (option.enableIf == nil) or option.enableIf
       end
    end
 
@@ -241,6 +243,13 @@ end
 local scroll_time = 0
 local scroll_max_time = 10
 
+local hold_times = {
+   category_reset = {
+      max = 20,
+      elapsed = 0,
+   },
+}
+
 local menu = {
    name = "main",
    title = "MENU",
@@ -250,7 +259,7 @@ local menu = {
          arr = {},
          selection = 1,
          selected = false,
-         pos = { x = 34, y = 44 },
+         pos = {x = 34, y = 44},
          separation = 30,
          max_visible = 5,
       },
@@ -284,6 +293,7 @@ function menu.update_once()
 end
 
 function menu.render()
+   local m = gMarioStates[0]
    -- submenus
    local visible_submenus = {}
    visible_submenus.min = math.min(math.max(1, menu.main.submenus.selection - 2), menu.main.submenus.selection, #menu.main.submenus.arr - 4)
@@ -292,14 +302,14 @@ function menu.render()
    for i = visible_submenus.min, visible_submenus.max do
       local submenu = menu.main.submenus.arr[i]
       if not submenu then break end
-      
+
       local target = menu.main.submenus.pos.y - (menu.main.submenus.separation * visible_submenus.min)
       local submenu_y = (target + (i * menu.main.submenus.separation))
-      
+
       -- darken other submenus if submenu selected
       local submenu_color = (menu.main.submenus.selected and i ~= menu.main.submenus.selection) and 170 or 255
       djui_hud_set_color(submenu_color, submenu_color, submenu_color, Usamenu.opacity)
-      
+
       -- render submenu name
       djui_hud_print_text(filter_text(submenu.name), menu.main.submenus.pos.x, submenu_y, 1)
       -- render arrow next to selection
@@ -324,7 +334,7 @@ function menu.render()
       local option_y = target + (i * menu.main.options.separation)
 
       -- change color if disabled
-      local option_color = (option.enable_if) and 255 or 170
+      local option_color = (option.enableIf) and 255 or 170
       local values_x = (screen.width - menu.main.submenus.pos.x)
 
       -- render option names
@@ -400,7 +410,7 @@ function menu.render()
                   end
 
                   -- handle input
-                  local input = gMarioStates[0].controller.buttonPressed & (L_CBUTTONS | R_CBUTTONS | U_CBUTTONS | D_CBUTTONS)
+                  local input = m.controller.buttonPressed & (L_CBUTTONS | R_CBUTTONS | U_CBUTTONS | D_CBUTTONS)
                   if input ~= 0 then
                      local steps = math.pow(10, inputs.selected_char - 1)
 
@@ -427,8 +437,6 @@ function menu.render()
                      sound_play('change')
                   end
                end
-               --   option.input.value = option.input.value % option.input.max + 1
-               -- option.input.value = (option.input.value - 2) % option.input.max + 1
             else
                current_selection_has_alt_values = false
             end
@@ -442,11 +450,38 @@ function menu.render()
    local options = menu.main.options
 
    -- handle other inputs --
+   -- category reset
+   if (m.controller.buttonDown & Z_TRIG) ~= 0 then
+      local cr = hold_times.category_reset
+      if cr.elapsed < cr.max then
+         cr.elapsed = cr.elapsed + 1
+         if cr.elapsed == cr.max then
+            local submenustr = submenus.arr[submenus.selection].name
+            for _, opt in ipairs(options.arr[submenustr]) do
+               for k, val in pairs(opt) do
+                  if k == 'value' then
+                     opt.value = ConfigDefaults[submenustr][opt.name].value
+                     save_config(submenustr, opt.name, opt.value)
+                  elseif ConfigDefaults[submenustr][opt.name][k] then
+                     opt[k].value = ConfigDefaults[submenustr][opt.name][k]
+                     save_config(submenustr, opt.name, opt[k].value, true)
+                  end
+               end
+            end
+            Usamenu.bottom_message({"RESET CATEGORY"})
+            main_menu_update()
+            --play_sound(SOUND_MARIO_WAAAOOOW, m.pos)
+         end
+      end
+   else
+      hold_times.category_reset.elapsed = 0
+   end
+
    -- submenus
    if not submenus.selected then
       -- allow scroll if more than 1
       if #submenus.arr > 1 then
-         local input = gMarioStates[0].controller.buttonDown & (U_JPAD | D_JPAD)
+         local input = m.controller.buttonDown & (U_JPAD | D_JPAD)
          if input ~= 0 and not Usamenu.opening_button_pressed then
             scroll_time = scroll_time + 1
 
@@ -478,7 +513,7 @@ function menu.render()
       local submenu = submenus.arr[submenus.selection]
       local options = options.arr[submenu.name]
       -- allow scroll if more than 1
-      local input = gMarioStates[0].controller.buttonDown & (U_JPAD | D_JPAD)
+      local input = m.controller.buttonDown & (U_JPAD | D_JPAD)
       if input ~= 0 and #options > 1 and not Usamenu.opening_button_pressed then
          scroll_time = scroll_time + 1
          if scroll_time == 1 or scroll_time >= scroll_max_time then
@@ -489,16 +524,14 @@ function menu.render()
             local prev = submenu.selection
             -- up - down
             if input == U_JPAD then
-               while submenu.selection == prev or not options[submenu.selection].enable_if do
-                  local s = submenu.selection
+               while submenu.selection == prev or not options[submenu.selection].enableIf do
+                  prev = submenu.selection
                   submenu.selection = Usamenu.move_selection(submenu.selection, 1, #options, -1, '')
-                  prev = s
                end
             elseif input == D_JPAD then
-               while submenu.selection == prev or not options[submenu.selection].enable_if do
-                  local s = submenu.selection
+               while submenu.selection == prev or not options[submenu.selection].enableIf do
+                  prev = submenu.selection
                   submenu.selection = Usamenu.move_selection(submenu.selection, 1, #options, 1, '')
-                  prev = s
                end
             end
             sound_play('change')
@@ -525,7 +558,7 @@ function menu.render()
          elseif buttonPressed(R_CBUTTONS) then
             option.value = Usamenu.move_selection(option.value, 1, #option.values, 1)
             save_config(submenu.name, option.name, option.value)
-               main_menu_update()
+            main_menu_update()
          end
       end
    end

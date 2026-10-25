@@ -28,7 +28,6 @@ Usatimer = {
          secs = 0,
          ms = 0,
       },
-      max_lifespan = 30, -- in frames
       remaining = 0,
    },
 }
@@ -50,18 +49,23 @@ local interactions = {
       [INTERACT_WATER_RING] = true,
       [INTERACT_KOOPA_SHELL] = 'ride',
       [INTERACT_TEXT] = true,
+      [INTERACT_COIN] = 'coin',
+      [INTERACT_DAMAGE] = 'enemy',
    }
 }
 -- generic actions
 local actions = {
    -- [ACT] = 'key'
-   stop = {
-      [INTERACT_BBH_ENTRANCE] = true,
-   },
    misc = {
       [ACT_LEDGE_GRAB] = 'ldgegrb',
-      [ACT_WALL_KICK_AIR] = 'wk',
-      [ACT_AIR_HIT_WALL] = 'wallhit',
+
+      --[ACT_AIR_HIT_WALL] = 'wallhit',
+      [ACT_SOFT_BONK] = 'wallhit',
+      [ACT_SOFT_BACKWARD_GROUND_KB] = 'wallhit',
+      [ACT_SOFT_FORWARD_GROUND_KB] = 'wallhit',
+      [ACT_BACKWARD_GROUND_KB] = 'wallhit',
+      [ACT_BACKWARD_AIR_KB] = 'wallhit',
+
       [ACT_SIDE_FLIP] = 'flip',
       [ACT_BACKFLIP] = 'flip',
       [ACT_FORWARD_ROLLOUT] = 'rollout',
@@ -80,11 +84,7 @@ local timer_pos = {
 }
 
 local function render_timers()
-   if Usamune.in_menu or is_game_paused() then
-      Usatimer.render_layer = "front"
-   else
-      Usatimer.render_layer = "behind"
-   end
+   Usatimer.render_layer = Usamune.in_menu and "front" or "behind"
    djui_hud_set_resolution(RESOLUTION_N64)
    djui_hud_set_font(FONT_CUSTOM_HUD)
 
@@ -96,6 +96,7 @@ local function render_timers()
       right_stack = right_stack
       -- main timer on screen
          + int(not Usatimer.is_hidden)
+         + int(racetmr_is_onscreen)
 
       -- race/slide timer on screen
       if Config.timer.pssrace.value > 1 then
@@ -121,23 +122,22 @@ local function render_timers()
 end
 
 local function on_hud_render_behind()
-   if not hud_is_hidden() and Usatimer.render_layer == "behind" then
+   if (hud_is_hidden() and not Usamune.in_menu) then return end
+   if Usatimer.render_layer == "behind" then
       render_timers()
    end
 end
 local function on_hud_render()
-   if not hud_is_hidden() and Usatimer.render_layer == "front" then
+   if (hud_is_hidden() and not Usamune.in_menu) then return end
+   if Usatimer.render_layer == "front" then
       render_timers()
    end
 end
 hook_event(HOOK_ON_HUD_RENDER_BEHIND, on_hud_render_behind)
 hook_event(HOOK_ON_HUD_RENDER, on_hud_render)
 
-local function update()
-   if not Usatimer.is_running or Usamune.in_menu then return end
-
+local function update_timer()
    -- update timer
-   subtimer = subtimer + 1
    Usatimer.time.ms = math.floor((subtimer / 30) * 100) % 100
    Usatimer.time.secs = math.floor(subtimer / 30) % 60
    Usatimer.time.mins = math.floor(subtimer / (30 * 60))
@@ -187,7 +187,14 @@ local function update()
       end
    end
 end
-hook_event(HOOK_UPDATE, update)
+
+hook_event(HOOK_UPDATE, function()
+   if Usamune.in_menu then return end
+   subtimer = subtimer + 1
+   if Usatimer.is_running then
+      update_timer()
+   end
+end)
 
 local should_restart_timer = true
 hook_event(HOOK_BEFORE_WARP, function(destLevel, destArea)
@@ -216,13 +223,14 @@ function Usatimer.screenshot(hideTimer)
       secs = Usatimer.time.secs,
       ms = Usatimer.time.ms,
    }
-   Usatimer.misctmr.remaining = Usatimer.misctmr.max_lifespan
+   Usatimer.misctmr.remaining = Config.misct.misctmr.alt
 end
 
 
 
 local function on_interact(m, obj, intType, val)
    if m.playerIndex ~= 0 then return end
+   if not val then return end
 
    -- red coins
    if intType == INTERACT_COIN then
@@ -233,35 +241,43 @@ local function on_interact(m, obj, intType, val)
    end
 
    -- stop timer
-   for i, value in pairs(interactions.stop) do
-      if i == intType and value == val then
-         Usatimer.stop()
-         return
-      end
+   if interactions.stop[intType] then
+      Usatimer.stop()
+      return
    end
    -- screenshot timer
-   for i, value in pairs(interactions.misc) do
-      if i == intType and value == val then
-         Usatimer.screenshot()
-      end
+   if interactions.misc[intType] then
+      Usatimer.screenshot()
    end
 end
 hook_event(HOOK_ON_INTERACT, on_interact)
+
+local touchwater = false
 
 local function before_set_mario_action(m, act)
    if m.playerIndex ~= 0 then return end
 
    -- speedkick
-   if act == ACT_JUMP_KICK and (m.action ~= ACT_JUMP and m.action ~= ACT_DOUBLE_JUMP and m.action ~= ACT_TRIPLE_JUMP)
-   and m.forwardVel > 30 then
-      Usatimer.screenshot()
+   if Config.misct.spdkick.value > 1 then
+      if act == ACT_JUMP_KICK and m.action & ACT_FLAG_STATIONARY
+      and m.forwardVel > 30 then
+         Usatimer.screenshot()
+      end
+   end
+
+   -- water
+   if Config.misct.surface.value > 1 then
+      if act & ACT_FLAG_SWIMMING ~= 0 then
+         if not touchwater then Usatimer.screenshot() end
+         touchwater = true
+      else
+         touchwater = false
+      end
    end
 
    -- screenshot timer
-   for i, key in pairs(actions.misc) do
-      if i == act and Config.misct[key].value > 1 then
-         Usatimer.screenshot()
-      end
+   if actions.misc[act] and Config.misct[actions.misc[act]].value > 1 then
+      Usatimer.screenshot()
    end
 end
 hook_event(HOOK_BEFORE_SET_MARIO_ACTION, before_set_mario_action)
@@ -274,3 +290,14 @@ local function on_obj_load(obj)
    end
 end
 hook_event(HOOK_ON_OBJECT_LOAD, on_obj_load)
+
+-- check for lava touch
+-- i really wish there's a better way to do this
+hook_event(HOOK_MARIO_UPDATE, function(m)
+   if Config.misct.surface.value == 1 then return end
+   if m.playerIndex ~= 0 then return end
+
+   if (m.floorHeight - m.pos.y) >= 0 and m.floor.type == HAZARD_TYPE_LAVA_FLOOR then
+      Usatimer.screenshot()
+   end
+end)

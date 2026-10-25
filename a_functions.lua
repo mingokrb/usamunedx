@@ -45,21 +45,18 @@ end
 -- utils --
 -----------
 
--- play sound as a string
+-- play sound with presets
+local sounds = {
+   buzz       = SOUND_MENU_CAMERA_BUZZ,
+   change     = SOUND_MENU_MESSAGE_NEXT_PAGE,
+   switchMenu = SOUND_MENU_CLICK_CHANGE_VIEW,
+   pause      = SOUND_MENU_PAUSE_2,
+   copy       = SOUND_MENU_MARIO_CASTLE_WARP,
+}
 function sound_play(sound)
+   if not sounds[sound] then return end
    local pos = gMarioStates[0].pos
-
-   if sound == 'buzz' or not sound then
-      play_sound(SOUND_MENU_CAMERA_BUZZ, pos)
-   elseif sound == 'change' then
-      play_sound(SOUND_MENU_MESSAGE_NEXT_PAGE, pos)
-   elseif sound == 'switchMenu' then
-      play_sound(SOUND_MENU_CLICK_CHANGE_VIEW, pos)
-   elseif sound == 'pause' then
-      play_sound(SOUND_MENU_PAUSE_2, pos)
-   elseif sound == 'copy' then
-      play_sound(SOUND_MENU_MARIO_CASTLE_WARP, pos)
-   end
+   play_sound(sounds[sound], pos)
 end
 
 -- faster than having to type that entire check every single time
@@ -79,7 +76,7 @@ function djui_hud_get_color_array()
    return { color.r, color.g, color.b, color.a }
 end
 
--- replace all lowercase 'x' with '`' to use the original x character texture
+-- replace all lowercase 'x' with '`' for the gray X character
 function filter_text(text)
    return text:gsub("x", "`")
 end
