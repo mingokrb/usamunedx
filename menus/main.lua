@@ -457,20 +457,11 @@ function menu.render()
          cr.elapsed = cr.elapsed + 1
          if cr.elapsed == cr.max then
             local submenustr = submenus.arr[submenus.selection].name
-            for _, opt in ipairs(options.arr[submenustr]) do
-               for k, val in pairs(opt) do
-                  if k == 'value' then
-                     opt.value = ConfigDefaults[submenustr][opt.name].value
-                     save_config(submenustr, opt.name, opt.value)
-                  elseif ConfigDefaults[submenustr][opt.name][k] then
-                     opt[k].value = ConfigDefaults[submenustr][opt.name][k]
-                     save_config(submenustr, opt.name, opt[k].value, true)
-                  end
-               end
-            end
-            Usamenu.bottom_message({"RESET CATEGORY"})
+            reset_category(submenustr)
             main_menu_update()
-            --play_sound(SOUND_MARIO_WAAAOOOW, m.pos)
+
+            Usamenu.bottom_message({"RESET CATEGORY"})
+            play_sound(SOUND_MARIO_WAAAOOOW, m.pos)
          end
       end
    else

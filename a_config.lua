@@ -2,7 +2,7 @@
 
 -- all default; 1 is usually false or disabled
 
--- option = { value = 1, alt = 1 }
+-- option = { value=1, alt=1 }
 --   option: name of menu option
 --   value: main value
 --   alt (optional): additional value that depends on the main value
@@ -13,88 +13,88 @@ local config_key_pattern = "usamune.%s.%s.%s"
 
 Config = {
    timer = {
-      stop = { value = 1 },
-      display = { value = 1 },
-      pssrace = { value = 1 },
-      tmrposi = { value = 1 },
+      stop    = { value=1 },
+      display = { value=1 },
+      pssrace = { value=1 },
+      tmrposi = { value=1 },
    },
    misct = {
-      misctmr = { value = 1, alt = 30 },
-      numdisp = { value = 1 },
-      xcam = { value = 1 },
-      bswitch = { value = 1 },
-      pswitch = { value = 1 },
-      ride = { value = 1 },
-      chest = { value = 1 },
-      crystal = { value = 1 },
-      enemy = { value = 1 },
-      exclbox = { value = 1 },
-      corkbox = { value = 1 },
-      objgrab = { value = 1 },
-      ldgegrb = { value = 1 },
-      polegrb = { value = 1 },
-      wk = { value = 1 },
-      wallhit = { value = 1 },
-      clip = { value = 1 },
-      surface = { value = 1 },
-      flip = { value = 1 },
-      rollout = { value = 1 },
-      dive = { value = 1 },
-      ljsldk = { value = 1 },
-      tj = { value = 1 },
-      spdkick = { value = 1 },
-      load = { value = 1 },
-      bowser = { value = 1 },
-      coin = { value = 1 },
-      oneup = { value = 1 },
+      misctmr = { value=1, alt=30 },
+      numdisp = { value=1 },
+      xcam    = { value=1 },
+      bswitch = { value=1 },
+      pswitch = { value=1 },
+      ride    = { value=1 },
+      chest   = { value=1 },
+      crystal = { value=1 },
+      enemy   = { value=1 },
+      exclbox = { value=1 },
+      corkbox = { value=1 },
+      objgrab = { value=1 },
+      ldgegrb = { value=1 },
+      polegrb = { value=1 },
+      wk      = { value=1 },
+      wallhit = { value=1 },
+      clip    = { value=1 },
+      surface = { value=1 },
+      flip    = { value=1 },
+      rollout = { value=1 },
+      dive    = { value=1 },
+      ljsldk  = { value=1 },
+      tj      = { value=1 },
+      spdkick = { value=1 },
+      load    = { value=1 },
+      bowser  = { value=1 },
+      coin    = { value=1 },
+      oneup   = { value=1 },
    },
    reset = {
-      lbutton = { value = 1 },
-      lxr = { value = 1 },
-      randstg = { value = 1 },
+      lbutton = { value=1 },
+      lxr     = { value=1 },
+      randstg = { value=1 },
    },
    deflt = {
       -- these are number input values
-      defcoin = { value = 1, alt = 0 },
-      defmiss = { value = 1, alt = 1 },
+      defcoin = { value=1, alt=0 },
+      defmiss = { value=1, alt=1 },
    },
    hud = {
-      life = { value = 1 },
-      star = { value = 1 },
-      dust = { value = 1 },
-      wkdisp = { value = 1, alt = 1 },
-      attempt = { value = 1 },
-      bpsdisp = { value = 1 },
+      life    = { value=1 },
+      star    = { value=1 },
+      dust    = { value=1 },
+      wkdisp  = { value=1, alt=1 },
+      attempt = { value=1 },
+      bpsdisp = { value=1 },
    },
    input = {
-      stick = { value = 1, alt = 1 },
-      stkbase = { value = 1 },
-      stkaxis = { value = 1 },
-      buttons = { value = 1, alt = 1 },
+      stick   = { value=1, alt=1 },
+      stkbase = { value=1 },
+      stkaxis = { value=1 },
+      buttons = { value=1, alt=1 },
    },
    data = {
-      sstates = { value = 1, alt = 1 },
+      sstates = { value=1, alt=1 },
    },
    misc = {
-      music = { value = 1 },
+      music   = { value=1 },
    },
    delux = {
-      menubtn = { value = 12 }, -- D_JPAD
-      hints = { value = 1 },
-      arwlerp = { value = 1, alt = 7 },
-      framep = { value = 1, alt = 1 },
+      menubtn = { value=12 }, -- D_JPAD
+      hints   = { value=1 },
+      arwlerp = { value=1, alt=7 },
+      framep  = { value=1, alt=1 },
    },
 }
 ConfigDefaults = table.deepcopy(Config)
 
 -- refresh Config table
 function refresh_config()
-   for ctg, menu in pairs(Config) do
-      for opt, option in pairs(menu) do
+   for ctg,menu in pairs(Config) do
+      for opt,option in pairs(menu) do
          local str = string.format(config_key_pattern, ctg, opt, '')
          -- load values
-         for i, value in pairs(option) do
-            option[i] = mod_storage_load_integer(str .. i, value)
+         for i,value in pairs(option) do
+            option[i] = mod_storage_load_integer(str..i, value)
          end
       end
    end
@@ -116,14 +116,13 @@ function reset_category(category)
    if not category then return end
    Config[category] = table.deepcopy(ConfigDefaults[category])
 
-   for opt, option in pairs(Config[category]) do
+   for opt,option in pairs(Config[category]) do
       local str = string.format(config_key_pattern, category, option, '')
-      for i, value in pairs(option) do
-         mod_storage_save_integer(str .. i, value)
-         printc(str .. i, value)
+      for i,value in pairs(option) do
+         mod_storage_save_integer(str..i, value)
       end
    end
-   console_log("config", "Reset all keys in /g2/Config.".. category .."/reset/ to default")
+   console_log("config", "Reset all /g2/usamune.".. category .."/reset/ keys to default")
 end
 
 -- final mod storage strings:
