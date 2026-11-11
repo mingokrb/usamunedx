@@ -13,9 +13,9 @@ You can also easily add new menus if you got basic Lua knowledge.
   - **[HINTS]**: Shows a brief description of the current category/function;
   - **[ARWLRP]**: Moves the selection arrow more smoothly (linear interpolation)
 * Separate **[INPUT]** category for input display, with more customization options such as:
-  - Display buttons from Right-to-Left;
-  - Set visibility of buttons and stick individually;
-  - New (optional) graphics for **X**, **Y**, **L** and **D-Pad** buttons display
+  - Display buttons horizontally from Right-to-Left or vertically from any direction;
+  - Set visibility of buttons/stick individually (e.g. show buttons but hide stick);
+  - New (optional) graphics for **X**, **Y**, **L** and **D-Pad** display
 * **???**
 
 ## Quality-of-Life Changes

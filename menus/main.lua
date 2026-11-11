@@ -165,7 +165,7 @@ local function update_menu()
       input = {
          { name = "stick",    values = {"off", "onval", "onvis", "oncomb"}, description =
             "Displays your stick input axis, appearance, or both",
-            alt = { values = {"small", "large"} } },
+            alt = { values = {"small", "large"}, conditional = true } },
          { name = "stkbase",  values = {"square", "circle"}, description =
             "Stick base appearance (mildly affects stick axis display)",
             enableIf = (Config.input.stick.value > 2) },
@@ -174,7 +174,10 @@ local function update_menu()
             enableIf = (Config.input.stick.value == 2 or Config.input.stick.value == 4) },
          { name = "buttons",  values = {"off", "asmall", "alarge", "bsmall", "blarge"}, description =
             "Displays your button inputs",
-            alt = { values = {"usamune", "cdeluxe"} } },
+            alt = { values = {"usamune", "cdeluxe"}, conditional = true } },
+         { name = "buttdir",  values = {"ltr", "rtl"}, description =
+            "Displays your button inputs",
+            alt = { values = {"horizntl", "vertical"} } },
       },
       data = {
          { name = "sstates",  values = {"off", "on"}, description =
@@ -346,100 +349,98 @@ function menu.render()
          arrowlerp(offset.x - 10, option_y + 5)
          djui_hud_render_texture(Usamenu.tex_arrow, arrow_pos[1].x, arrow_pos[1].y, 1, 1)
 
-         if option.value > 1 then
-            -- alt values
-            if option.alt then
-               current_selection_has_alt_values = true
+         -- alt values
+         if option.alt and (not option.alt.conditional or option.value > 1) then
+            current_selection_has_alt_values = true
 
-               for k, alt in ipairs(option.alt.values) do
-                  local alt_y = (screen.height - (#option.alt.values * 18) - 16) + ((k - 1) * 18)
-                  -- render arrow
-                  if k == option.alt.value then
-                     arrowlerp(values_x - djui_hud_measure_text(alt) - 10, alt_y + 5, 2)
-                     djui_hud_render_texture(Usamenu.tex_arrow, arrow_pos[2].x, arrow_pos[2].y, 1, 1)
-                     djui_hud_set_color(255,255,255, Usamenu.opacity)
-                  else
-                     djui_hud_set_color(170,170,170, Usamenu.opacity)
-                  end
-                  -- render text
-                  djui_hud_print_text_rtl(filter_text(alt), values_x, alt_y, 1)
+            for k, alt in ipairs(option.alt.values) do
+               local alt_y = (screen.height - (#option.alt.values * 18) - 16) + ((k - 1) * 18)
+               -- render arrow
+               if k == option.alt.value then
+                  arrowlerp(values_x - djui_hud_measure_text(alt) - 10, alt_y + 5, 2)
+                  djui_hud_render_texture(Usamenu.tex_arrow, arrow_pos[2].x, arrow_pos[2].y, 1, 1)
                   djui_hud_set_color(255,255,255, Usamenu.opacity)
+               else
+                  djui_hud_set_color(170,170,170, Usamenu.opacity)
                end
+               -- render text
+               djui_hud_print_text_rtl(filter_text(alt), values_x, alt_y, 1)
+               djui_hud_set_color(255,255,255, Usamenu.opacity)
+            end
 
-               -- input
-               if buttonPressed(U_CBUTTONS) then
-                  option.alt.value = (option.alt.value - 2) % #option.alt.values + 1
-                  save_config(submenu.name, option.name, option.alt.value, true)
-                  main_menu_update()
-                  sound_play('change')
+            -- input
+            if buttonPressed(U_CBUTTONS) then
+               option.alt.value = (option.alt.value - 2) % #option.alt.values + 1
+               save_config(submenu.name, option.name, option.alt.value, true)
+               main_menu_update()
+               sound_play('change')
                -- c-right
-               elseif buttonPressed(D_CBUTTONS) then
-                  option.alt.value = option.alt.value % #option.alt.values + 1
-                  save_config(submenu.name, option.name, option.alt.value, true)
-                  main_menu_update()
-                  sound_play('change')
-               end
+            elseif buttonPressed(D_CBUTTONS) then
+               option.alt.value = option.alt.value % #option.alt.values + 1
+               save_config(submenu.name, option.name, option.alt.value, true)
+               main_menu_update()
+               sound_play('change')
+            end
 
             -- input values
-            elseif option.input then
-               current_selection_has_alt_values = true
-               local inputs = menu.main.options.input
-               local input_y = (screen.height - 40)
+         elseif option.input then
+            current_selection_has_alt_values = true
+            local inputs = menu.main.options.input
+            local input_y = (screen.height - 40)
 
-               -- render text
-               --local hue = inputs.edit_mode and 255 or 170
-               --djui_hud_set_color(hue, hue, hue, Usamenu.opacity)
-               djui_hud_set_color(255,255,255, Usamenu.opacity)
-               djui_hud_print_text_rtl(filter_text(string.format(option.input.text, option.input.value)), values_x + 12, input_y - 18, 1)
+            -- render text
+            --local hue = inputs.edit_mode and 255 or 170
+            --djui_hud_set_color(hue, hue, hue, Usamenu.opacity)
+            djui_hud_set_color(255,255,255, Usamenu.opacity)
+            djui_hud_print_text_rtl(filter_text(string.format(option.input.text, option.input.value)), values_x + 12, input_y - 18, 1)
 
-               -- switch edit mode
-               if buttonPressed(A_BUTTON) then
-                  inputs.edit_mode = not inputs.edit_mode
-                  sound_play('switchMenu')
-               end
-
-               if not inputs.edit_mode then
-                  djui_hud_print_text_rtl("PRESSA TO EDIT", values_x + 12, input_y, 1)
-               else
-                  for k = 1, option.input.length do
-                     -- render arrow
-                     if k == inputs.selected_char then
-                        arrowlerp(values_x - (k * 12) + 16, input_y, 2)
-                        djui_hud_render_texture(gTextures.arrow_up, arrow_pos[2].x, arrow_pos[2].y, 1, 1)
-                     end
-                  end
-
-                  -- handle input
-                  local input = m.controller.buttonPressed & (L_CBUTTONS | R_CBUTTONS | U_CBUTTONS | D_CBUTTONS)
-                  if input ~= 0 then
-                     local steps = math.pow(10, inputs.selected_char - 1)
-
-                     -- left - right
-                     if option.input.length > 1 then
-                        if input == L_CBUTTONS then
-                           inputs.selected_char = inputs.selected_char % option.input.length + 1
-                        elseif input == R_CBUTTONS then
-                           inputs.selected_char = (inputs.selected_char - 2) % option.input.length + 1
-                        end
-                     end
-                     -- up - down
-                     if input == U_CBUTTONS then
-                        option.input.value = option.input.value + steps
-                     elseif input == D_CBUTTONS then
-                        option.input.value = option.input.value - steps
-                     end
-
-                     option.input.value = (option.input.value - 1) % option.input.max + 1
-                     option.input.value = math.clamp(option.input.value, option.input.min, option.input.max)
-
-                     save_config(submenu.name, option.name, option.input.value, true)
-                     main_menu_update()
-                     sound_play('change')
-                  end
-               end
-            else
-               current_selection_has_alt_values = false
+            -- switch edit mode
+            if buttonPressed(A_BUTTON) then
+               inputs.edit_mode = not inputs.edit_mode
+               sound_play('switchMenu')
             end
+
+            if not inputs.edit_mode then
+               djui_hud_print_text_rtl("PRESSA TO EDIT", values_x + 12, input_y, 1)
+            else
+               for k = 1, option.input.length do
+                  -- render arrow
+                  if k == inputs.selected_char then
+                     arrowlerp(values_x - (k * 12) + 16, input_y, 2)
+                     djui_hud_render_texture(gTextures.arrow_up, arrow_pos[2].x, arrow_pos[2].y, 1, 1)
+                  end
+               end
+
+               -- handle input
+               local input = m.controller.buttonPressed & (L_CBUTTONS | R_CBUTTONS | U_CBUTTONS | D_CBUTTONS)
+               if input ~= 0 then
+                  local steps = math.pow(10, inputs.selected_char - 1)
+
+                  -- left - right
+                  if option.input.length > 1 then
+                     if input == L_CBUTTONS then
+                        inputs.selected_char = inputs.selected_char % option.input.length + 1
+                     elseif input == R_CBUTTONS then
+                        inputs.selected_char = (inputs.selected_char - 2) % option.input.length + 1
+                     end
+                  end
+                  -- up - down
+                  if input == U_CBUTTONS then
+                     option.input.value = option.input.value + steps
+                  elseif input == D_CBUTTONS then
+                     option.input.value = option.input.value - steps
+                  end
+
+                  option.input.value = (option.input.value - 1) % option.input.max + 1
+                  option.input.value = math.clamp(option.input.value, option.input.min, option.input.max)
+
+                  save_config(submenu.name, option.name, option.input.value, true)
+                  main_menu_update()
+                  sound_play('change')
+               end
+            end
+         else
+            current_selection_has_alt_values = false
          end
       end
       -- value

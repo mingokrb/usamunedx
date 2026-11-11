@@ -1,3 +1,6 @@
+local djui_hud_get_screen_width,djui_hud_get_screen_height =
+      djui_hud_get_screen_width,djui_hud_get_screen_height
+
 ---------------
 -- rendering --
 ---------------
@@ -41,9 +44,14 @@ function from_screen_center(x, y)
    return { x = x, y = y }
 end
 
------------
--- utils --
------------
+----------
+-- util --
+----------
+
+-- get width and height
+function get_screen_size()
+   return djui_hud_get_screen_width(),djui_hud_get_screen_height()
+end
 
 -- play sound with presets
 local sounds = {

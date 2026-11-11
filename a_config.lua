@@ -71,6 +71,7 @@ Config = {
       stkbase = { value=1 },
       stkaxis = { value=1 },
       buttons = { value=1, alt=1 },
+      buttdir = { value=1, alt=1 },
    },
    data = {
       sstates = { value=1, alt=1 },
