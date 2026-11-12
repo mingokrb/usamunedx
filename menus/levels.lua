@@ -151,7 +151,7 @@ function menu.render()
    if not menu.levels.arr[1] then
       -- 'no levels' text
       local pos = from_screen_center()
-      djui_hud_set_color(255, 255, 255, Usamenu.opacity + math.sin(get_global_timer() * 0.3) * 2)
+      djui_hud_set_color(255,255,255, Usamenu.opacity + math.sin(get_global_timer() * 0.3) * 2)
       djui_hud_print_text_centered("NO LEVELS", pos.x, pos.y, 1)
       return
    end
@@ -193,7 +193,7 @@ function menu.render()
 
       level_pos = {
          x = menu.levels.pos.x + (((i-1) % menu.levels.levels_per_line) * menu.levels.separation.x),
-         y = target + (math.floor((i-1) / menu.levels.levels_per_line) * menu.levels.separation.y)
+         y = target + (((i-1) // menu.levels.levels_per_line) * menu.levels.separation.y)
       }
 
       -- render level names
@@ -231,9 +231,9 @@ function menu.render()
                   sound_play('change')
                -- up - down
                elseif input == U_CBUTTONS then
-                  indexed_level_info[selected_info] = Usamenu.move_selection(indexed_level_info[selected_info], 0, 256, steps)
+                  indexed_level_info[selected_info] = Usamenu.move_selection(indexed_level_info[selected_info] + steps, 0, 256)
                elseif input == D_CBUTTONS then
-                  indexed_level_info[selected_info] = Usamenu.move_selection(indexed_level_info[selected_info], 0, 256, -steps)
+                  indexed_level_info[selected_info] = Usamenu.move_selection(indexed_level_info[selected_info] - steps, 0, 256)
                end
 
                -- set custom IDs
@@ -313,7 +313,7 @@ function menu.render()
 
    -- handle level selection input
    local input = gMarioStates[0].controller.buttonDown & (L_JPAD | R_JPAD | U_JPAD | D_JPAD)
-   if input ~= 0 and #levels > 1 and not Usamenu.opening_button_pressed then
+   if input ~= 0 and #levels > 1 and not Usamenu.open_button_pressed then
       scroll_time = scroll_time + 1
 
       if scroll_time == 1 or scroll_time >= scroll_max_time then
@@ -325,17 +325,17 @@ function menu.render()
          -- left - right
          if input == L_JPAD then
             while menu.levels.selection == prevSelection or (levels[menu.levels.selection] and levels[menu.levels.selection].name == '') do
-               menu.levels.selection = Usamenu.move_selection(menu.levels.selection, 1, #levels, -1, '')
+               menu.levels.selection = Usamenu.move_selection(menu.levels.selection - 1, 1, #levels, '')
             end
          elseif input == R_JPAD then
             while menu.levels.selection == prevSelection or (levels[menu.levels.selection] and levels[menu.levels.selection].name == '') do
-               menu.levels.selection = Usamenu.move_selection(menu.levels.selection, 1, #levels, 1, '')
+               menu.levels.selection = Usamenu.move_selection(menu.levels.selection + 1, 1, #levels, '')
             end
          -- up - down
          elseif input == U_JPAD then
-            menu.levels.selection = Usamenu.move_selection(menu.levels.selection, 1, #levels + (menu.levels.levels_per_line-1), -menu.levels.levels_per_line, '')
+            menu.levels.selection = Usamenu.move_selection(menu.levels.selection - menu.levels.levels_per_line, 1, #levels + (menu.levels.levels_per_line-1), '')
          elseif input == D_JPAD then
-            menu.levels.selection = Usamenu.move_selection(menu.levels.selection, 1, #levels + (menu.levels.levels_per_line-1), menu.levels.levels_per_line, '')
+            menu.levels.selection = Usamenu.move_selection(menu.levels.selection + menu.levels.levels_per_line, 1, #levels + (menu.levels.levels_per_line-1), '')
          end
 
          menu.levels.selection = math.clamp(menu.levels.selection, 1, #levels)
@@ -346,7 +346,7 @@ function menu.render()
    end
 
    -- render arrow next to selection
-   djui_hud_render_texture(Usamenu.tex_arrow, arrow_pos[1].x, arrow_pos[1].y, 1, 1)
+   djui_hud_render_texture(Usamenu.TEX_ARROW, arrow_pos[1].x, arrow_pos[1].y, 1, 1)
 end
 
 hook_event(HOOK_ON_PLAY_SOUND, function()

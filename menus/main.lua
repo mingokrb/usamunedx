@@ -318,7 +318,7 @@ function menu.render()
       -- render arrow next to selection
       if not menu.main.submenus.selected and i == menu.main.submenus.selection then
          arrowlerp(menu.main.submenus.pos.x - 10, submenu_y + 5)
-         djui_hud_render_texture(Usamenu.tex_arrow, arrow_pos[1].x, arrow_pos[1].y, 1, 1)
+         djui_hud_render_texture(Usamenu.TEX_ARROW, arrow_pos[1].x, arrow_pos[1].y, 1, 1)
       end
    end
 
@@ -347,7 +347,7 @@ function menu.render()
       if menu.main.submenus.selected and i == submenu.selection then
          -- render arrow next to selection
          arrowlerp(offset.x - 10, option_y + 5)
-         djui_hud_render_texture(Usamenu.tex_arrow, arrow_pos[1].x, arrow_pos[1].y, 1, 1)
+         djui_hud_render_texture(Usamenu.TEX_ARROW, arrow_pos[1].x, arrow_pos[1].y, 1, 1)
 
          -- alt values
          if option.alt and (not option.alt.conditional or option.value > 1) then
@@ -358,7 +358,7 @@ function menu.render()
                -- render arrow
                if k == option.alt.value then
                   arrowlerp(values_x - djui_hud_measure_text(alt) - 10, alt_y + 5, 2)
-                  djui_hud_render_texture(Usamenu.tex_arrow, arrow_pos[2].x, arrow_pos[2].y, 1, 1)
+                  djui_hud_render_texture(Usamenu.TEX_ARROW, arrow_pos[2].x, arrow_pos[2].y, 1, 1)
                   djui_hud_set_color(255,255,255, Usamenu.opacity)
                else
                   djui_hud_set_color(170,170,170, Usamenu.opacity)
@@ -474,7 +474,7 @@ function menu.render()
       -- allow scroll if more than 1
       if #submenus.arr > 1 then
          local input = m.controller.buttonDown & (U_JPAD | D_JPAD)
-         if input ~= 0 and not Usamenu.opening_button_pressed then
+         if input ~= 0 and not Usamenu.open_button_pressed then
             scroll_time = scroll_time + 1
 
             if scroll_time == 1 or scroll_time >= scroll_max_time then
@@ -483,9 +483,9 @@ function menu.render()
                end
                -- up - down
                if input == U_JPAD then
-                  submenus.selection = Usamenu.move_selection(submenus.selection, 1, #submenus.arr, -1)
+                  submenus.selection = Usamenu.move_selection(submenus.selection - 1, 1, #submenus.arr)
                elseif input == D_JPAD then
-                  submenus.selection = Usamenu.move_selection(submenus.selection, 1, #submenus.arr, 1)
+                  submenus.selection = Usamenu.move_selection(submenus.selection + 1, 1, #submenus.arr)
                end
             end
          else
@@ -506,7 +506,7 @@ function menu.render()
       local options = options.arr[submenu.name]
       -- allow scroll if more than 1
       local input = m.controller.buttonDown & (U_JPAD | D_JPAD)
-      if input ~= 0 and #options > 1 and not Usamenu.opening_button_pressed then
+      if input ~= 0 and #options > 1 and not Usamenu.open_button_pressed then
          scroll_time = scroll_time + 1
          if scroll_time == 1 or scroll_time >= scroll_max_time then
             if scroll_time > 1 then
@@ -518,12 +518,12 @@ function menu.render()
             if input == U_JPAD then
                while submenu.selection == prev or not options[submenu.selection].enableIf do
                   prev = submenu.selection
-                  submenu.selection = Usamenu.move_selection(submenu.selection, 1, #options, -1, '')
+                  submenu.selection = Usamenu.move_selection(submenu.selection - 1, 1, #options, '')
                end
             elseif input == D_JPAD then
                while submenu.selection == prev or not options[submenu.selection].enableIf do
                   prev = submenu.selection
-                  submenu.selection = Usamenu.move_selection(submenu.selection, 1, #options, 1, '')
+                  submenu.selection = Usamenu.move_selection(submenu.selection + 1, 1, #options, '')
                end
             end
             sound_play('change')
@@ -543,12 +543,12 @@ function menu.render()
          local option = options[submenu.selection]
          -- c-left
          if buttonPressed(L_CBUTTONS) then
-            option.value = Usamenu.move_selection(option.value, 1, #option.values, -1)
+            option.value = Usamenu.move_selection(option.value - 1, 1, #option.values)
             save_config(submenu.name, option.name, option.value)
             main_menu_update()
          -- c-right
          elseif buttonPressed(R_CBUTTONS) then
-            option.value = Usamenu.move_selection(option.value, 1, #option.values, 1)
+            option.value = Usamenu.move_selection(option.value + 1, 1, #option.values)
             save_config(submenu.name, option.name, option.value)
             main_menu_update()
          end

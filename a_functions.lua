@@ -48,6 +48,12 @@ end
 -- util --
 ----------
 
+-- get if on android/ios for specific checks
+function is_mobile()
+   local _os = get_os_name():lower()
+   return (_os == 'android' or _os == 'ios')
+end
+
 -- get width and height
 function get_screen_size()
    return djui_hud_get_screen_width(),djui_hud_get_screen_height()
@@ -62,17 +68,18 @@ local sounds = {
    copy       = SOUND_MENU_MARIO_CASTLE_WARP,
 }
 function sound_play(sound)
-   if not sounds[sound] then return end
-   local pos = gMarioStates[0].pos
-   play_sound(sounds[sound], pos)
+   play_sound(sounds[sound], gMarioStates[0].pos)
 end
 
--- faster than having to type that entire check every single time
+-- if X button or any button Pressed
 function buttonPressed(button)
-   return (gMarioStates[0].controller.buttonPressed & (button or gMarioStates[0].controller.buttonPressed)) ~= 0
+   local m = gMarioStates[0]
+   return (m.controller.buttonPressed & (button or m.controller.buttonPressed)) ~= 0
 end
+-- if X button or any button Down
 function buttonDown(button)
-   return (gMarioStates[0].controller.buttonDown & (button or gMarioStates[0].controller.buttonDown)) ~= 0
+   local m = gMarioStates[0]
+   return (m.controller.buttonDown & (button or m.controller.buttonDown)) ~= 0
 end
 
 -- supports color indexes in order (1, 2, 3, 4) and RGBA keys in any order (r = 1, g = 2, b = 3, a = 4)
@@ -97,6 +104,15 @@ end
 local button_names = Usamune.buttons
 function get_button(buttonID)
    return button_names.id[buttonID]
+end
+
+----------
+-- math --
+----------
+
+-- 1 indexed wrap
+function wraplua(x, min, max)
+   return (x-min) % max + min
 end
 
 -----------

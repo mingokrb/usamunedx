@@ -3,7 +3,7 @@ local djui_hud_set_color_array,djui_hud_get_color_array,djui_hud_print_text_shad
 local menu = {
    name = "test",
    title = "EVIL MENU",
-   bg_color = {0,0,0, 160},
+   bgcolor = {0,0,0, 160},
 }
 
 function menu.render()

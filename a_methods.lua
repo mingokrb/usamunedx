@@ -25,7 +25,12 @@ function table.join(arr, concatenator)
    return str
 end
 
+----------------------
+-----------
+-- table --
+-----------
+
 -- pick random item from array
-function table.pickRandom(arr, startIndex, endIndex)
-   return arr[math.random(startIndex or 1, endIndex or #arr)]
+function pickRandom(arr, starts, ends)
+   return arr[math.random(starts or 1, ends or #arr)]
 end
